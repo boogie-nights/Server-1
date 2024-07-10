@@ -42,7 +42,7 @@ if (%aggressive_npc ! npc_uid) {
 //    %combatstart = map_clock;
 //    mes("Setting combatstart");
 //}
-walktrigger(combat_lock);
+//walktrigger(combat_lock);
 
 // facesquare(npc_coord);
 // TODO: Range and mage check
