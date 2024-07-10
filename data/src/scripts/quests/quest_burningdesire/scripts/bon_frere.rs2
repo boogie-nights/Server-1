@@ -1,0 +1,119 @@
+[opnpc1,bon_frere]
+switch_int(%burning_desire_progress) {
+    case ^burning_desire_start: @bon_frere_pre_quest;
+    case ^burning_desire_kill_rats: @bon_frere_collecting_rats;
+    case ^burning_desire_add_logs: @bon_frere_add_logs_to_fire;
+    case ^burning_desire_burn_rats: @bon_frere_burn_rats;
+    case ^burning_desire_burnt_rats: @bon_frere_burnt_rats;
+    case ^burning_desire_complete: @bon_frere_post_quest;
+}
+
+[label,bon_frere_pre_quest]
+~chatplayer(quiz, "Hello there.");
+~chatnpc(happy, "Greetings!| I'm Bon Frere, a brother of |the Order of the Flame.");
+@multi3(
+    "What's the Order of the Flame?", whats_the_order,
+    "What are you doing out here?", what_are_you_doing_out_here,
+    "I must be going.", must_be_going
+);
+
+[label,whats_the_order]
+~chatplayer(quiz, "What's the Order of the Flame?");
+~chatnpc(happy, "We are an organization dedicating |our lives to Flame.");
+~chatnpc(happy, "We believe through its cleansing properties| all scourge can be removed from this world.");
+~chatplayer(shifty, "Right...");
+@multi2(
+    "What are you doing out here?", what_are_you_doing_out_here,
+    "I must be going.", must_be_going
+);
+
+[label,what_are_you_doing_out_here]
+~chatplayer(quiz, "What are you doing out here?");
+~chatnpc(happy, "I've been slaughtering some nearby|rats and burning their corpses.");
+~chatplayer(shock, "Slaughtering rats and burning their corpses?");
+~chatnpc(happy, "Of course!|They've been infected with a nasty| plague and we must stop it from spreading.");
+@multi2(
+    "Is there anything I can do to help?", anything_i_can_do_to_help,
+    "Well, good luck with that.", good_luck_with_that
+
+);
+
+[label,anything_i_can_do_to_help]
+~chatplayer(quiz, "Is there anything I can do to help?");
+~chatnpc(happy, "Of course! I'm a bit tired from cleansing the scourge all day. If you could get me two more infected rat corpses that would speed things up!");
+@multi2(
+    "Sure, I'll help.", ill_help,
+    "No thank you.", no_thank_you
+);
+
+[label,ill_help]
+~chatplayer(neutral, "Sure, I'll help.");
+~chatnpc(happy, "Excellent! You can find the rats to the south-east. The ones with green fur are infected. Remember I need two more corpses.");
+%burning_desire_progress = ^burning_desire_kill_rats;
+~send_quest_progress(questlist:burningdesire, %burning_desire_progress, ^burning_desire_complete);
+~chatplayer(neutral, "I'll be on my way then.");
+
+[label,no_thank_you]
+~chatplayer(neutral, "No thank you.");
+~chatnpc(happy, "I understand. This kind of work isn't for everyone.");
+
+[label,good_luck_with_that]
+~chatplayer(neutral, "Well, good luck with that.");
+~chatnpc(happy, "May the Flame guide you.");
+
+[label,must_be_going]
+~chatplayer(neutral, "I must be going.");
+~chatnpc(happy, "May the Flame guide you.");
+
+[label,bon_frere_collecting_rats]
+~chatnpc(quiz, "Have you gotten those rats yet?");
+
+def_int $rats = inv_total(inv, plague_rat_corpse);
+
+if ($rats < 2) {
+    ~chatplayer("default", "I'm still working on gathering them.");
+    ~chatnpc(happy, "Come back when you have them then.");
+} else {
+    ~chatplayer(happy, "I have them right here!");
+    ~chatnpc(happy, "Excellent! We'll want burn those right away.");
+    ~chatnpc(happy, "First, you should add more logs to the fire to get it appropriately hot for the cleansing.");
+    %burning_desire_progress = ^burning_desire_add_logs;
+}
+
+[label,bon_frere_add_logs_to_fire]
+if (%burning_desire_progress = ^burning_desire_add_logs) {
+    ~chatnpc(quiz, "How goes strengthening the Flame?");
+    ~chatplayer("default", "I'm still working on that.");
+    ~chatnpc(happy, "You should make haste!|There's more plague bearers out there to cleanse.");
+}
+
+[label,bon_frere_burn_rats]
+if (%burning_desire_plague_rats_count >= 2 & %burning_desire_progress = ^burning_desire_burn_rats) {
+    %burning_desire_progress = ^burning_desire_burnt_rats;
+    @bon_frere_burnt_rats;
+}
+
+~chatnpc(laugh, "I see you've strengthened the fire. |Quickly now! Cast the rats into the flame!");
+~chatplayer(worried, "Sure thing...");
+
+[label,bon_frere_burnt_rats]
+~chatnpc(happy, "Great job! There's still lots to do, |but I'm plenty rested now.");
+~chatnpc(happy, "Thank you for your help, traveler.|I truly couldn't have done it without you.");
+~chatplayer(quiz, "Are there any rewards?");
+~chatnpc(happy, "Ahem... |The Order is... |Err... |A little hard up at the moment...");
+~chatplayer(angry, "...");
+~chatnpc(laugh, "I suppose you could say the reward is|the skills you've learned along the way!");
+~chatplayer(angry, "I suppose...");
+~chatnpc(happy, "Anyhow, thank you again, traveler!");
+queue(burning_desire_complete, 0);
+
+[label,bon_frere_post_quest]
+~chatnpc(happy, "Hello again, traveller!| I hope you're making good use of the |skills you learned.");
+~chatplayer(angry, "So, you still don't have a reward for me.");
+~chatnpc(laugh, "I must be on my way!|There are many beasts to cleanse!");
+
+[queue,burning_desire_complete]
+%burning_desire_progress = ^burning_desire_complete;
+givexp(firemaking, 3000);
+givexp(prayer, 2500);
+~send_quest_complete(questlist:burningdesire, plague_rat_corpse, 250, ^burningdesire_questpoints, "You have completed the\\nBurning Desire Quest!");

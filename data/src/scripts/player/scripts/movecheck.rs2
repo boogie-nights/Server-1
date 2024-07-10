@@ -4,3 +4,11 @@ if (map_clock < %stunned) {
     p_stopaction;
     walktrigger(stunned);
 }
+
+
+[walktrigger,combat_lock]
+if (map_clock < add(%combatstart, 12)) {
+    mes("You must wait 7 seconds before you can exit combat!");
+    p_stopaction;
+    walktrigger(combat_lock);
+}

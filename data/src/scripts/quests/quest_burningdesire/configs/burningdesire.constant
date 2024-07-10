@@ -1,0 +1,6 @@
+^burning_desire_start = 0
+^burning_desire_kill_rats = 1
+^burning_desire_add_logs = 2
+^burning_desire_burn_rats = 3
+^burning_desire_burnt_rats = 4
+^burning_desire_complete = 5

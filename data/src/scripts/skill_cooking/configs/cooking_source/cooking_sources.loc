@@ -63,6 +63,8 @@ category=cooking_fire
 [loc_2732]
 name=Fire
 desc=Hot!
+op1=Add-logs
+op3=hidden
 model=model_loc_2732
 anim=seq_475
 hasalpha=yes

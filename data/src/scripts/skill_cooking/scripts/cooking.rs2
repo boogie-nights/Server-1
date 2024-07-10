@@ -1,5 +1,11 @@
 [oplocu,_cooking_oven] @attempt_cook_item(last_useitem);
 [oplocu,_cooking_fire]
+switch_obj(last_useitem) {
+    case plague_rat_corpse : @burn_plague_remains_single(last_useitem);
+    case default: @cooking_food;
+}
+
+[label,cooking_food]
 if (%tutorial_progress < ^tutorial_complete) {
     @tut_attempt_cook_item(last_useitem);
 } else {

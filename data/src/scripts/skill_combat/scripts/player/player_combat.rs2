@@ -31,6 +31,18 @@ if (($attackrange <= 1 & ~player_in_combat_check = false) | $distance > $attackr
 if (~player_in_combat_check = false) {
     return;
 }
+if (%aggressive_npc ! npc_uid) {
+    mes("Setting combat start.");
+    %combatstart = map_clock;
+}
+
+//// TODO: Check around this nonsense for like.. not currently in combat?
+//if (%aggressive_npc = null) {
+//    %combatstart = map_clock;
+//    mes("Setting combatstart");
+//}
+walktrigger(combat_lock);
+
 // facesquare(npc_coord);
 // TODO: Range and mage check
 if (%damagetype = ^ranged_style) {

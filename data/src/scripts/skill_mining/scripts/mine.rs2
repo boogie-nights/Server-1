@@ -109,7 +109,6 @@ if (%action_delay < map_clock) {
 ~mining_sound;
 p_oploc(3);
 
-
 [label,get_ore_normal]
 db_find(mining_table:rock, loc_type);
 def_dbrow $data = db_findnext;

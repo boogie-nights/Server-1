@@ -46,6 +46,8 @@ sound_synth(db_getfield($data, prayers:sound, 0), 0, 0);
 %prayer_drain_effect = add(max(%prayer_drain_effect, 0), enum(int, int, prayer_drain_effects, db_getfield($data, prayers:prayer, 0)));
 // mes("<tostring(map_clock)>: prayer_activate();");
 // deactivate conflicting prayers
+
+~drain_prayer_on_activation(enum(int, int, prayer_drain_effects, db_getfield($data, prayers:prayer, 0)));
 def_int $i = 0;
 while ($i <= db_getfieldcount($data, prayers:prayer_deactivate)) {
     def_int $prayer = db_getfield($data, prayers:prayer_deactivate, $i);
@@ -58,20 +60,20 @@ if ($headicon > 0) {
     ~headicon_add($headicon);
 }
 // Yes its 5 tick as opposed to 1t in osrs
-//https://www.youtube.com/watch?v=cVisNIAVvfk&t=169s 
+//https://www.youtube.com/watch?v=cVisNIAVvfk&t=169s
 //https://twitter.com/JagexAsh/status/1646903747837059072
 if (getqueue(start_draining) < 1) { // it might be queue(start_draining, getqueue(start_draining));
-    queue(start_draining, 5);
+    queue(start_draining, 1); // Changed from 5
 }
 
 
 [queue,start_draining]
 // https://youtu.be/UAWSeOYLVHU 5t
 // https://youtu.be/cQZhL4VP84A?t=179 normal timer instead of softtimer
-settimer(drain_prayer, 5);
+settimer(drain_prayer, 1); // Changed from 5
 
 [timer,drain_prayer]
-%prayer_drain_counter = calc(%prayer_drain_effect * 5 + max(%prayer_drain_counter, 0));
+%prayer_drain_counter = calc(%prayer_drain_effect * 1 + max(%prayer_drain_counter, 0)); // multiplier is for how often we want to drain
 // 60 + equipment bonus * 2
 if (~prayers_are_active = false) {
     cleartimer(drain_prayer);
@@ -90,6 +92,17 @@ if (%prayer_drain_counter >= max(%prayer_drain_resistance, 60)) {
         ~deactivate_prayers;
         sound_synth(prayer_drain, 0, 0);
     }
+}
+
+[proc,drain_prayer_on_activation](int $drain)()
+cleartimer(drain_prayer);
+stat_sub(prayer, divide($drain, 10), 0);
+if (stat(prayer) = 0) {
+    cleartimer(drain_prayer);
+    //clearqueue(start_draining);
+    mes("You have run out of prayer points, you must recharge at an altar.");
+    ~deactivate_prayers;
+    sound_synth(prayer_drain, 0, 0);
 }
 
 [proc,prayers_are_active]()(boolean)

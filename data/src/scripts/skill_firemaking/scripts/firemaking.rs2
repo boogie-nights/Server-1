@@ -158,3 +158,94 @@ def_int $delay = calc(100 + random(100)); // firemaking length: https://archive.
 loc_add($fire_coord, loc_2732, 1, centrepiece_straight, $delay);
 world_delay($delay);
 obj_add($fire_coord, ashes, 1, 100);
+
+[proc,best_logs]()(namedobj)
+if (inv_total(inv, magic_logs) > 0 & stat(firemaking) >= 75) return (magic_logs);
+if (inv_total(inv, yew_logs) > 0 & stat(firemaking) >= 60) return (yew_logs);
+if (inv_total(inv, maple_logs) > 0 & stat(firemaking) >= 45) return (maple_logs);
+if (inv_total(inv, willow_logs) > 0 & stat(firemaking) >= 30) return (willow_logs);
+if (inv_total(inv, oak_logs) > 0 & stat(firemaking) >= 15) return (oak_logs);
+if (inv_total(inv, logs) > 0) return (logs);
+else return(null);
+
+[oploc1,loc_2732] @add_logs_to_bonfire;
+[oploc3,loc_2732] @add_logs_to_bonfire;
+
+//[oplocu,loc_2732] @use_logs_with_fire;
+
+[label,add_logs_to_bonfire]
+
+if(%burning_desire_progress < ^burning_desire_complete) {
+    mes("I'm not quite sure how to do this yet.");
+    return;
+}
+
+def_obj $best_logs = ~best_logs;
+if($best_logs = null) {
+    mes("You do not have any logs of which you have the level to use.");
+    return;
+}
+
+if (%action_delay < map_clock) {
+    p_stopaction;
+    mes("You begin adding <lowercase(oc_name($best_logs))> to the fire.");
+
+    anim(human_pickuptable, 0);
+    sound_synth(fire_lit, 0, 0);
+
+    inv_del(inv, $best_logs, 1);
+
+    givexp(firemaking, oc_param($best_logs, productexp));
+
+    %action_delay = calc(map_clock + 4);
+} else if (%action_delay = map_clock) {
+    mes("You add more <lowercase(oc_name($best_logs))> to the fire.");
+
+    anim(human_pickuptable, 0);
+    sound_synth(fire_lit, 0, 0);
+
+    inv_del(inv, $best_logs, 1);
+
+    givexp(firemaking, oc_param($best_logs, productexp));
+
+    %action_delay = calc(map_clock + 4);
+}
+p_oploc(3);
+
+[label,use_logs_with_fire]
+def_obj $logs = last_useitem;
+
+if($logs = null) {
+    mes("You do not have any logs of which you have the level to use.");
+    return;
+}
+
+if (%action_delay < map_clock) {
+    p_stopaction;
+    mes("You begin adding <lowercase(oc_name($logs))> to the fire.");
+
+    anim(human_pickuptable, 0);
+    sound_synth(fire_lit, 0, 0);
+
+    inv_del(inv, $logs, 1);
+
+    givexp(firemaking, oc_param($logs, productexp));
+
+    %action_delay = calc(map_clock + 4);
+} else if (%action_delay = map_clock) {
+    mes("You add more <lowercase(oc_name($logs))> to the fire.");
+
+    anim(human_pickuptable, 0);
+    sound_synth(fire_lit, 0, 0);
+
+    inv_del(inv, $logs, 1);
+
+    givexp(firemaking, oc_param($logs, productexp));
+
+    %action_delay = calc(map_clock + 4);
+}
+p_oploc(3);
+
+
+
+

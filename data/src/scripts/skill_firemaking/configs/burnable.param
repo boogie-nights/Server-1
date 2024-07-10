@@ -1,0 +1,11 @@
+[firemaking_req]
+type=int
+default=0
+
+[firemaking_exp]
+type=int
+default=0
+
+[prayer_exp]
+type=int
+default=0

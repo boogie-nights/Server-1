@@ -1972,7 +1972,8 @@ export default class Player extends PathingEntity {
             return;
         }
 
-        const multi = Number(Environment.XP_MULTIPLIER) || 1;
+        const multi = 1 + (0.5 * (Math.floor(this.baseLevels[stat] / 10))); // Number(Environment.XP_MULTIPLIER) || 1;
+
         this.stats[stat] += xp * multi;
 
         // cap to 200m, this is represented as "2 billion" because we use 32-bit signed integers and divide by 10 to give us a decimal point

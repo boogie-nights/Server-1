@@ -1,0 +1,10 @@
+[ai_queue3,giant_plague_rat](int $arg) @plague_rat_droptable;
+
+
+[label,plague_rat_droptable]
+gosub(npc_death);
+if (npc_findhero = false) {
+    return;
+}
+
+obj_add(npc_coord, plague_rat_corpse, 1, ^lootdrop_duration);

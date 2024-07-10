@@ -1,0 +1,26 @@
+[label,burn_plague_remains_single](obj $plague_corpse)
+if (%burning_desire_progress < ^burning_desire_complete) {
+    ~chatplayer("default", "I'm not sure why I would do that.");
+    return;
+}
+
+if(inv_total(inv, $plague_corpse) = null) {
+    mes("You're out of <lowercase(oc_name($plague_corpse))>'.");
+    return;
+}
+
+if (%action_delay <= map_clock) {
+    p_stopaction;
+
+    anim(human_pickuptable, 0);
+    sound_synth(fire_lit, 0, 0);
+
+    inv_del(inv, $plague_corpse, 1);
+
+    mes("You toss the <lowercase(oc_name($plague_corpse))> into the fire.");
+    givexp(firemaking, oc_param($plague_corpse, firemaking_exp));
+    givexp(prayer, oc_param($plague_corpse, prayer_exp));
+    %burning_desire_plague_rats_count = calc(%burning_desire_plague_rats_count + 1);
+
+    %action_delay = calc(map_clock + 4);
+}

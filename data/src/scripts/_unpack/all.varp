@@ -432,3 +432,6 @@ scope=perm
 
 [ring_of_forging]
 scope=perm
+
+[combatstart]
+protect=no
