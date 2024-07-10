@@ -1,6 +1,6 @@
 [label,burn_plague_remains_single](obj $plague_corpse)
 if (%burning_desire_progress < ^burning_desire_complete) {
-    ~chatplayer("default", "I'm not sure why I would do that.");
+    ~chatplayer("<p,default>I'm not sure why I would do that.");
     return;
 }
 
