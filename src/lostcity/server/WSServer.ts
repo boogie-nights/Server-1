@@ -29,7 +29,7 @@ export default class WSServer {
     wss: WebSocketServer | null = null;
 
     start() {
-        const port = (Environment.GAME_PORT as number) + 1;
+        const port = (Environment.NODE_PORT as number) + 1;
 
         this.wss = new WebSocketServer({ port, host: '0.0.0.0' }, () => {
             //console.log(`[WSWorld]: Listening on port ${port}`);
@@ -49,10 +49,14 @@ export default class WSServer {
             ws.on('message', async (data: Buffer) => {
                 const packet = new Packet(new Uint8Array(data));
 
-                if (socket.state === 1) {
-                    await World.readIn(socket, packet);
-                } else {
-                    await Login.readIn(socket, packet);
+                try {
+                    if (socket.state === 1) {
+                        await World.readIn(socket, packet);
+                    } else {
+                        await Login.readIn(socket, packet);
+                    }
+                } catch (err) {
+                    socket.close();
                 }
             });
 

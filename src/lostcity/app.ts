@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { startWeb } from '#lostcity/web/app.js';
+import { startWeb } from '#lostcity/web.js';
 
 import World from '#lostcity/engine/World.js';
 
@@ -8,10 +8,10 @@ import TcpServer from '#lostcity/server/TcpServer.js';
 import WSServer from '#lostcity/server/WSServer.js';
 
 import Environment from '#lostcity/util/Environment.js';
-import { packClient, packServer } from './tools/pack/packall.js';
+import { packClient, packServer } from './cache/packall.js';
 import { updateCompiler } from '#lostcity/util/RuneScriptCompiler.js';
 
-if (Environment.UPDATE_ON_STARTUP) {
+if (Environment.BUILD_STARTUP_UPDATE) {
     await updateCompiler();
 }
 
@@ -42,9 +42,9 @@ process.on('SIGINT', function () {
 
     exiting = true;
 
-    if (Environment.LOCAL_DEV) {
-        World.rebootTimer(0);
+    if (Environment.NODE_PRODUCTION) {
+        World.rebootTimer(Environment.NODE_KILLTIMER as number);
     } else {
-        World.rebootTimer(Environment.SHUTDOWN_TIMER as number);
+        World.rebootTimer(0);
     }
 });

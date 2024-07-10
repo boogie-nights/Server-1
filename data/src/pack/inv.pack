@@ -1,4 +1,4 @@
-0=inv_0
+0=trawler_catch
 1=bob_axes
 2=armourshop
 3=generalshop1
@@ -18,7 +18,7 @@
 17=generalshop4
 18=valaines_shop_of_champions
 19=flynn_maces
-20=inv_20
+20=gnomeball
 21=brian_battleaxe
 22=waynes_chains
 23=generalshop5
@@ -42,7 +42,7 @@
 41=generalshop10
 42=tony_pizza
 43=harry_fish
-44=inv_44
+44=ranged_quiver_inv
 45=happy_heroes_hemporium
 46=davons_amulet_store
 47=generalshop11
@@ -138,9 +138,9 @@
 137=diango_toy
 138=oblis_general_store
 139=generalshop14
-140=inv_140
+140=trail_puzzle_inv
 141=reward
-142=duel_arena_arrows
+142=stakeinv
 143=shrimp_and_parrot
 144=crafting_rings
 145=crafting_necklaces

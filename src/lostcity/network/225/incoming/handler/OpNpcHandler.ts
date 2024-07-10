@@ -1,5 +1,5 @@
 import MessageHandler from '#lostcity/network/incoming/handler/MessageHandler.js';
-import NpcType from '#lostcity/cache/NpcType.js';
+import NpcType from '#lostcity/cache/config/NpcType.js';
 import ServerTriggerType from '#lostcity/engine/script/ServerTriggerType.js';
 import Interaction from '#lostcity/entity/Interaction.js';
 import World from '#lostcity/engine/World.js';
@@ -21,12 +21,14 @@ export default class OpNpcHandler extends MessageHandler<OpNpc> {
             return false;
         }
 
-        if (!player.npcs.has(npc.nid)) {
+        if (!player.buildArea.npcs.has(npc.nid)) {
+            player.unsetMapFlag();
             return false;
         }
 
         const npcType = NpcType.get(npc.type);
         if (!npcType.op || !npcType.op[message.op - 1]) {
+            player.unsetMapFlag();
             return false;
         }
 
@@ -43,8 +45,7 @@ export default class OpNpcHandler extends MessageHandler<OpNpc> {
             mode = ServerTriggerType.APNPC5;
         }
 
-        player.clearInteraction();
-        player.closeModal();
+        player.clearPendingAction();
         player.setInteraction(Interaction.ENGINE, npc, mode, { type: npc.type, com: -1 });
         player.opcalled = true;
         return true;

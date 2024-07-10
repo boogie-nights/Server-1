@@ -18,7 +18,7 @@
 def_int $is_empty = loc_param(mining_rock_empty);
 if ($is_empty = ^true) {
     anim(null, 0);
-    mes("There is currently no ore available in this rock.");
+    mes("There is no ore currently available in this rock.");
     sound_synth(prospect, 0, 0);
     return;
 }
@@ -104,6 +104,7 @@ if (%skill_anim < calc(map_clock + 1)) {
 if (%action_delay < map_clock) {
     %action_delay = calc(map_clock + $mining_rate);
 } else if (%action_delay = map_clock) {
+    %skill_sound = null;
     jump($get_ore);
 }
 ~mining_sound;

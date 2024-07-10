@@ -18,7 +18,7 @@ export default class TcpServer {
 
     start() {
         this.tcp.on('connection', (s: net.Socket) => {
-            s.setTimeout(30000);
+            s.setTimeout(60000);
             s.setNoDelay(true);
 
             const ip: string = s.remoteAddress ?? 'unknown';
@@ -34,10 +34,14 @@ export default class TcpServer {
             s.on('data', async (data: Buffer) => {
                 const packet = new Packet(new Uint8Array(data));
 
-                if (socket.state === 1) {
-                    await World.readIn(socket, packet);
-                } else {
-                    await Login.readIn(socket, packet);
+                try {
+                    if (socket.state === 1) {
+                        await World.readIn(socket, packet);
+                    } else {
+                        await Login.readIn(socket, packet);
+                    }
+                } catch (err) {
+                    socket.close();
                 }
             });
 
@@ -62,8 +66,8 @@ export default class TcpServer {
             });
         });
 
-        this.tcp.listen(Environment.GAME_PORT as number, '0.0.0.0', () => {
-            //console.log(`[World]: Listening on port ${Environment.GAME_PORT}`);
+        this.tcp.listen(Environment.NODE_PORT as number, '0.0.0.0', () => {
+            //console.log(`[World]: Listening on port ${Environment.NODE_PORT}`);
         });
     }
 }

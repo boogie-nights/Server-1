@@ -67,10 +67,10 @@
 66=waterfall_golrie_and_puzzle
 67=hetty_progress
 68=biohazard_progress
-69=exit_essence_mine_coord
-70=plantation_employed
+69=varp_69
+70=exit_essence_mine_coord
 71=hunt_progress
-72=food_store_employed
+72=hunt_store_employed
 73=crate_bananas
 74=crate_rum
 75=boat_takeoff
@@ -107,8 +107,8 @@
 106=newcomers_pos
 107=priest_progress
 108=attackstyle_magic
-109=varp_109
-110=varp_110
+109=trawler
+110=trawler_catch
 111=tree_progress
 112=itgronigen_progress
 113=keepdoor_unlocked
@@ -149,7 +149,7 @@
 148=crest_progress
 149=open_book
 150=grandtree_progress
-151=varp_151
+151=gnomeball_progress
 152=varp_152
 153=glider_takeoff
 154=shantay_jail_progress
@@ -205,8 +205,8 @@
 204=macro_event
 205=macro_event_uid
 206=macro_whirlpool_counter
-207=varp_207
-208=varp_208
+207=macro_gas_counter
+208=macro_ent_counter
 209=varp_209
 210=smithing_bars
 211=smithing_level
@@ -258,7 +258,7 @@
 257=tradepartner
 258=tradestatus
 259=mcannon_world
-260=varp_260
+260=temp
 261=option1
 262=option2
 263=option3

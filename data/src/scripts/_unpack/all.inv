@@ -1,11 +1,6 @@
-[inv_0]
+[trawler_catch]
 size=40
-
-[inv_20]
-size=1
-
-[inv_44]
-size=1
+stackall=yes
 
 [inv_55]
 size=1
@@ -34,5 +29,7 @@ size=9
 [inv_136]
 size=9
 
-[inv_140]
+[trail_puzzle_inv]
+scope=temp
 size=25
+dummyinv=yes

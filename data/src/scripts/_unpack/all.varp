@@ -94,6 +94,8 @@ scope=perm
 [waterfall_golrie_and_puzzle]
 scope=perm
 
+[varp_69]
+
 [boat_takeoff]
 transmit=yes
 
@@ -118,19 +120,18 @@ scope=perm
 [multiway]
 type=boolean
 
-[chest_macro_gas_coord]
-type=coord
-scope=perm
-
 [newcomers_pos]
 transmit=yes
 
 [attackstyle_magic]
 transmit=yes
 
-[varp_109]
+[trawler]
+scope=perm
 
-[varp_110]
+[trawler_catch]
+scope=perm
+protect=no
 
 [bank_noted]
 transmit=yes
@@ -199,7 +200,8 @@ transmit=yes
 [open_book]
 type=obj
 
-[varp_151]
+[gnomeball_progress]
+scope=perm
 
 [varp_152]
 
@@ -210,15 +212,6 @@ transmit=yes
 scope=perm
 
 [varp_155]
-
-[target1]
-transmit=yes
-
-[target2]
-transmit=yes
-
-[target3]
-transmit=yes
 
 [upass_progress]
 scope=perm
@@ -252,10 +245,6 @@ scope=perm
 
 [mill_flour]
 scope=perm
-
-[varp_207]
-
-[varp_208]
 
 [varp_209]
 
@@ -373,7 +362,8 @@ type=obj
 [thread_used]
 scope=perm
 
-[varp_260]
+[temp]
+scope=temp
 
 [option1]
 transmit=yes
@@ -429,6 +419,7 @@ scope=perm
 [varp_289]
 
 [ring_of_recoil]
+scope=perm
 
 [ring_of_forging]
 scope=perm

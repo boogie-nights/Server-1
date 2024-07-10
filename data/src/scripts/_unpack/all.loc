@@ -1261,7 +1261,7 @@ desc=This figure brings luck to those who sail.
 model=model_loc_254
 width=2
 
-[loc_255]
+[winch]
 name=Winch
 desc=Used for pulling things up.
 model=model_loc_255
@@ -12074,6 +12074,7 @@ model=model_loc_52
 op1=Open
 active=yes
 blockrange=no
+category=magic_guild_dungeon_door
 
 [loc_2155]
 name=Gate
@@ -12083,6 +12084,7 @@ op1=Open
 mirror=yes
 active=yes
 blockrange=no
+category=magic_guild_dungeon_door
 
 [loc_2156]
 name=Magic Portal
@@ -13267,20 +13269,6 @@ active=yes
 op1=Open
 op2=Search
 
-[loc_2393]
-name=Gnome goal
-desc=Aim for the goal!
-model=model_loc_2393
-active=yes
-
-[loc_2394]
-name=Gate
-desc=A gate to the Gnomeball pitch.
-model=model_loc_193
-op1=Open
-active=yes
-blockrange=no
-
 [loc_2395]
 model=model_loc_193
 blockrange=no
@@ -14014,108 +14002,6 @@ model=model_loc_76
 active=no
 forceapproach=north
 
-[loc_2575]
-name=Marshy jungle vine
-desc=A marshy jungle vine.
-model=model_loc_1205
-hillskew=yes
-op2=Search
-recol1s=640
-recol1d=544
-recol2s=24449
-recol2d=30497
-
-[loc_2576]
-name=Marshy jungle vine
-desc=A marshy jungle vine.
-model=model_loc_1205
-hillskew=yes
-recol1s=24449
-recol1d=640
-
-[loc_2577]
-name=Palm tree
-desc=A tall palm tree with some plants growing at it's stem.
-model=model_loc_1311
-width=2
-length=2
-mapscene=5
-op2=Search
-
-[loc_2578]
-name=Palm tree
-desc=A tall palm tree.
-model=model_loc_1311
-width=2
-length=2
-mapscene=5
-
-[loc_2579]
-name=Scorched earth
-desc=The burnt ground has a plant growing on it.
-model=model_loc_2579
-mapscene=5
-hillskew=yes
-op2=Search
-recol1s=13505
-recol1d=6241
-recol2s=15586
-recol2d=8352
-
-[loc_2580]
-name=Scorched earth
-desc=The ground has been burnt here by a fire.
-model=model_loc_2579
-mapscene=5
-hillskew=yes
-recol1s=13505
-recol1d=6241
-recol2s=15586
-recol2d=8352
-
-[loc_2581]
-name=Rock
-desc=A rock with green moss growing on it.
-model=model_loc_453
-mapscene=12
-op2=Search
-
-[loc_2582]
-name=Rock
-desc=A rock, it looks like something was growing here.
-model=model_loc_453
-mapscene=12
-
-[loc_2583]
-name=Fungus covered Cavern wall
-desc=It looks as if it is covered in some fungus.
-model=model_loc_1446
-contrast=100
-ambient=50
-active=yes
-op2=Search
-recol1s=12580
-recol1d=448
-
-[loc_2584]
-name=Rocks
-desc=A collection of rocks over what looks like a depression.
-model=model_loc_2218
-width=2
-length=2
-hillskew=yes
-occlude=yes
-op2=Search
-
-[loc_2585]
-name=Hand holds
-desc=Rocky walls, you may be able to climb it.
-model=model_loc_1456
-contrast=100
-ambient=50
-active=yes
-op1=Climb
-
 [dragon_slayer_magic_door]
 name=Door
 desc=It's closed.
@@ -14663,65 +14549,6 @@ width=2
 length=3
 op1=Climb-up
 op2=Investigate
-
-[hopper_full]
-name=Hopper
-desc=Grain goes in here.
-model=model_loc_1783
-width=2
-
-[hopper_lumbridge]
-name=Hopper
-desc=Grain goes in here.
-model=model_loc_1783
-width=2
-
-[hopper_varrock]
-name=Hopper
-desc=Grain goes in here.
-model=model_loc_1783
-width=2
-
-[hopper_zanaris]
-name=Hopper
-desc=Grain goes in here.
-model=model_loc_1783
-width=2
-
-[hopper_ardougne]
-name=Hopper
-desc=Grain goes in here.
-model=model_loc_1783
-width=2
-
-[hoppercontrol_lumbridge]
-name=Hopper controls
-desc=These control the flow of grain from the hopper to the millstones.
-model=model_loc_1785
-op1=Operate
-
-[hoppercontrol_varrock]
-name=Hopper controls
-desc=These control the flow of grain from the hopper to the millstones.
-model=model_loc_1785
-op1=Operate
-
-[hoppercontrol_zanaris]
-name=Hopper controls
-desc=These control the flow of grain from the hopper to the millstones.
-model=model_loc_1785
-op1=Operate
-
-[hoppercontrol_ardougne]
-name=Hopper controls
-desc=These control the flow of grain from the hopper to the millstones.
-model=model_loc_1785
-op1=Operate
-
-[hoppercontrol_inuse]
-name=Hopper controls
-desc=These control the flow of grain from the hopper to the millstones.
-model=model_loc_2722
 
 [loc_2723]
 name=Kebab
@@ -17811,7 +17638,6 @@ recol3s=5285
 recol3d=5216
 category=double_door_open_and_close_right
 param=next_loc_stage,loc_3210
-param=open_sound,coffin_open
 
 [loc_3210]
 name=Odd looking wall
@@ -17839,7 +17665,6 @@ recol3s=5285
 recol3d=5216
 category=double_door_open_and_close_left
 param=next_loc_stage,loc_3212
-param=open_sound,coffin_open
 
 [loc_3212]
 name=Odd looking wall

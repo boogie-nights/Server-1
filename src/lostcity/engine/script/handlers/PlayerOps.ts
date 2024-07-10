@@ -1,10 +1,10 @@
-import IdkType from '#lostcity/cache/IdkType.js';
-import SpotanimType from '#lostcity/cache/SpotanimType.js';
+import IdkType from '#lostcity/cache/config/IdkType.js';
+import SpotanimType from '#lostcity/cache/config/SpotanimType.js';
 
 import World from '#lostcity/engine/World.js';
 
 import ScriptOpcode from '#lostcity/engine/script/ScriptOpcode.js';
-import {ActivePlayer, checkedHandler, ProtectedActivePlayer} from '#lostcity/engine/script/ScriptPointer.js';
+import ScriptPointer, {ActivePlayer, checkedHandler, ProtectedActivePlayer} from '#lostcity/engine/script/ScriptPointer.js';
 import ScriptProvider from '#lostcity/engine/script/ScriptProvider.js';
 import { CommandHandlers } from '#lostcity/engine/script/ScriptRunner.js';
 import ScriptState from '#lostcity/engine/script/ScriptState.js';
@@ -14,11 +14,30 @@ import { PlayerQueueType, ScriptArgument } from '#lostcity/entity/EntityQueueReq
 import { PlayerTimerType } from '#lostcity/entity/EntityTimer.js';
 import { isNetworkPlayer } from '#lostcity/entity/NetworkPlayer.js';
 import { Position } from '#lostcity/entity/Position.js';
+import CameraInfo from '#lostcity/entity/CameraInfo.js';
 import Interaction from '#lostcity/entity/Interaction.js';
+import PlayerStat from '#lostcity/entity/PlayerStat.js';
+import Player from '#lostcity/entity/Player.js';
 
-import ServerProt from '#lostcity/server/ServerProt.js';
+import ServerProt from '#lostcity/network/225/outgoing/prot/ServerProt.js';
+import CamShake from '#lostcity/network/outgoing/model/CamShake.js';
+import CamReset from '#lostcity/network/outgoing/model/CamReset.js';
+import PCountDialog from '#lostcity/network/outgoing/model/PCountDialog.js';
+import SynthSound from '#lostcity/network/outgoing/model/SynthSound.js';
+import IfSetColour from '#lostcity/network/outgoing/model/IfSetColour.js';
+import IfSetHide from '#lostcity/network/outgoing/model/IfSetHide.js';
+import IfSetObject from '#lostcity/network/outgoing/model/IfSetObject.js';
+import IfShowSide from '#lostcity/network/outgoing/model/IfShowSide.js';
+import IfSetModel from '#lostcity/network/outgoing/model/IfSetModel.js';
+import IfSetRecol from '#lostcity/network/outgoing/model/IfSetRecol.js';
+import TutorialFlashSide from '#lostcity/network/outgoing/model/TutorialFlashSide.js';
+import IfSetAnim from '#lostcity/network/outgoing/model/IfSetAnim.js';
+import IfSetPlayerHead from '#lostcity/network/outgoing/model/IfSetPlayerHead.js';
+import IfSetText from '#lostcity/network/outgoing/model/IfSetText.js';
+import IfSetNpcHead from '#lostcity/network/outgoing/model/IfSetNpcHead.js';
+import IfSetPosition from '#lostcity/network/outgoing/model/IfSetPosition.js';
+import SetMultiway from '#lostcity/network/outgoing/model/SetMultiway.js';
 
-import Environment from '#lostcity/util/Environment.js';
 import ColorConversion from '#lostcity/util/ColorConversion.js';
 
 import * as rsmod from '@2004scape/rsmod-pathfinder';
@@ -32,9 +51,12 @@ import {
     NpcTypeValid,
     NumberNotNull,
     ObjTypeValid,
+    PlayerStatValid,
     SeqTypeValid,
     SpotAnimTypeValid,
     StringNotNull,
+    GenderValid,
+    SkinColourValid
 } from '#lostcity/engine/script/ScriptValidators.js';
 
 const PlayerOps: CommandHandlers = {
@@ -110,7 +132,7 @@ const PlayerOps: CommandHandlers = {
     }),
 
     [ScriptOpcode.ANIM]: checkedHandler(ActivePlayer, state => {
-        const delay = check(state.popInt(), NumberNotNull);
+        const delay = state.popInt();
         const seq = state.popInt();
 
         state.activePlayer.playAnimation(seq, delay);
@@ -128,32 +150,24 @@ const PlayerOps: CommandHandlers = {
         const [coord, height, rotationSpeed, rotationMultiplier] = state.popInts(4);
 
         const pos: Position = check(coord, CoordValid);
-
-        const localX = pos.x - Position.zoneOrigin(state.activePlayer.loadedX);
-        const localZ = pos.z - Position.zoneOrigin(state.activePlayer.loadedZ);
-
-        state.activePlayer.writeLowPriority(ServerProt.CAM_LOOKAT, localX, localZ, height, rotationSpeed, rotationMultiplier);
+        state.activePlayer.cameraPackets.addTail(new CameraInfo(ServerProt.CAM_LOOKAT, pos.x, pos.z, height, rotationSpeed, rotationMultiplier));
     }),
 
     [ScriptOpcode.CAM_MOVETO]: checkedHandler(ActivePlayer, state => {
         const [coord, height, rotationSpeed, rotationMultiplier] = state.popInts(4);
 
         const pos: Position = check(coord, CoordValid);
-
-        const localX = pos.x - Position.zoneOrigin(state.activePlayer.loadedX);
-        const localZ = pos.z - Position.zoneOrigin(state.activePlayer.loadedZ);
-
-        state.activePlayer.writeLowPriority(ServerProt.CAM_MOVETO, localX, localZ, height, rotationSpeed, rotationMultiplier);
+        state.activePlayer.cameraPackets.addTail(new CameraInfo(ServerProt.CAM_MOVETO, pos.x, pos.z, height, rotationSpeed, rotationMultiplier));
     }),
 
     [ScriptOpcode.CAM_SHAKE]: checkedHandler(ActivePlayer, state => {
         const [type, jitter, amplitude, frequency] = state.popInts(4);
 
-        state.activePlayer.writeLowPriority(ServerProt.CAM_SHAKE, type, jitter, amplitude, frequency);
+        state.activePlayer.write(new CamShake(type, jitter, amplitude, frequency));
     }),
 
     [ScriptOpcode.CAM_RESET]: checkedHandler(ActivePlayer, state => {
-        state.activePlayer.writeLowPriority(ServerProt.CAM_RESET);
+        state.activePlayer.write(new CamReset());
     }),
 
     [ScriptOpcode.COORD]: checkedHandler(ActivePlayer, state => {
@@ -179,8 +193,9 @@ const PlayerOps: CommandHandlers = {
         state.pushInt(state.activePlayer.lastCom);
     },
 
+    // todo: move out of PlayerOps
     [ScriptOpcode.LAST_INT]: state => {
-        state.pushInt(state.activePlayer.lastInt);
+        state.pushInt(state.lastInt);
     },
 
     [ScriptOpcode.LAST_ITEM]: state => {
@@ -269,10 +284,6 @@ const PlayerOps: CommandHandlers = {
     [ScriptOpcode.MES]: checkedHandler(ActivePlayer, state => {
         const message = state.popString();
 
-        if (Environment.CLIRUNNER) {
-            console.log(message);
-        }
-
         state.activePlayer.messageGame(message);
     }),
 
@@ -295,7 +306,7 @@ const PlayerOps: CommandHandlers = {
     }),
 
     [ScriptOpcode.P_COUNTDIALOG]: checkedHandler(ProtectedActivePlayer, state => {
-        state.activePlayer.writeLowPriority(ServerProt.P_COUNTDIALOG);
+        state.activePlayer.write(new PCountDialog());
         state.execution = ScriptState.COUNTDIALOG;
     }),
 
@@ -314,14 +325,7 @@ const PlayerOps: CommandHandlers = {
         if (type < 0 || type >= 5) {
             throw new Error(`Invalid oploc: ${type + 1}`);
         }
-        if (state.activePlayer.target !== null) {
-            return;
-        }
-        if (state.activePlayer.hasWaypoints()) {
-            return;
-        }
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
+        state.activePlayer.stopAction();
         state.activePlayer.setInteraction(Interaction.SCRIPT, state.activeLoc, ServerTriggerType.APLOC1 + type);
     }),
 
@@ -330,27 +334,13 @@ const PlayerOps: CommandHandlers = {
         if (type < 0 || type >= 5) {
             throw new Error(`Invalid opnpc: ${type + 1}`);
         }
-        if (state.activePlayer.target !== null) {
-            return;
-        }
-        if (state.activePlayer.hasWaypoints()) {
-            return;
-        }
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
+        state.activePlayer.stopAction();
         state.activePlayer.setInteraction(Interaction.SCRIPT, state.activeNpc, ServerTriggerType.APNPC1 + type, {type: state.activeNpc.type, com: -1});
     }),
 
     [ScriptOpcode.P_OPNPCT]: checkedHandler(ProtectedActivePlayer, state => {
         const spellId: number = check(state.popInt(), NumberNotNull);
-        if (state.activePlayer.target !== null) {
-            return;
-        }
-        if (state.activePlayer.hasWaypoints()) {
-            return;
-        }
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
+        state.activePlayer.stopAction();
         state.activePlayer.setInteraction(Interaction.SCRIPT, state.activeNpc, ServerTriggerType.APNPCT, {type: state.activeNpc.type, com: spellId});
     }),
 
@@ -360,16 +350,11 @@ const PlayerOps: CommandHandlers = {
     }),
 
     [ScriptOpcode.P_STOPACTION]: checkedHandler(ProtectedActivePlayer, state => {
-        // clear current walk queue, clear current interaction, close interface, clear suspended script? > not the script, cant emote while going thru toll
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
-        state.activePlayer.unsetMapFlag();
+        state.activePlayer.stopAction();
     }),
 
     [ScriptOpcode.P_CLEARPENDINGACTION]: checkedHandler(ProtectedActivePlayer, state => {
-        // clear current interaction but leave walk queue intact
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
+        state.activePlayer.clearPendingAction();
     }),
 
     [ScriptOpcode.P_TELEJUMP]: checkedHandler(ProtectedActivePlayer, state => {
@@ -399,7 +384,7 @@ const PlayerOps: CommandHandlers = {
     [ScriptOpcode.SOUND_SYNTH]: checkedHandler(ActivePlayer, state => {
         const [synth, loops, delay] = state.popInts(3);
 
-        state.activePlayer.writeLowPriority(ServerProt.SYNTH_SOUND, synth, loops, delay);
+        state.activePlayer.write(new SynthSound(synth, loops, delay));
     }),
 
     [ScriptOpcode.STAFFMODLEVEL]: checkedHandler(ActivePlayer, state => {
@@ -407,13 +392,13 @@ const PlayerOps: CommandHandlers = {
     }),
 
     [ScriptOpcode.STAT]: checkedHandler(ActivePlayer, state => {
-        const stat = check(state.popInt(), NumberNotNull);
+        const stat: PlayerStat = check(state.popInt(), PlayerStatValid);
 
         state.pushInt(state.activePlayer.levels[stat]);
     }),
 
     [ScriptOpcode.STAT_BASE]: checkedHandler(ActivePlayer, state => {
-        const stat = check(state.popInt(), NumberNotNull);
+        const stat: PlayerStat = check(state.popInt(), PlayerStatValid);
 
         state.pushInt(state.activePlayer.baseLevels[stat]);
     }),
@@ -421,7 +406,7 @@ const PlayerOps: CommandHandlers = {
     [ScriptOpcode.STAT_ADD]: checkedHandler(ActivePlayer, state => {
         const [stat, constant, percent] = state.popInts(3);
 
-        check(stat, NumberNotNull);
+        check(stat, PlayerStatValid);
         check(constant, NumberNotNull);
         check(percent, NumberNotNull);
 
@@ -429,12 +414,15 @@ const PlayerOps: CommandHandlers = {
         const current = player.levels[stat];
         const added = current + (constant + (current * percent) / 100);
         player.levels[stat] = Math.min(added, 255);
+        if (stat === 3 && player.levels[3] >= player.baseLevels[3]) {
+            player.resetHeroPoints();
+        }
     }),
 
     [ScriptOpcode.STAT_SUB]: checkedHandler(ActivePlayer, state => {
         const [stat, constant, percent] = state.popInts(3);
 
-        check(stat, NumberNotNull);
+        check(stat, PlayerStatValid);
         check(constant, NumberNotNull);
         check(percent, NumberNotNull);
 
@@ -455,7 +443,7 @@ const PlayerOps: CommandHandlers = {
     [ScriptOpcode.STAT_HEAL]: checkedHandler(ActivePlayer, state => {
         const [stat, constant, percent] = state.popInts(3);
 
-        check(stat, NumberNotNull);
+        check(stat, PlayerStatValid);
         check(constant, NumberNotNull);
         check(percent, NumberNotNull);
 
@@ -463,7 +451,11 @@ const PlayerOps: CommandHandlers = {
         const base = player.baseLevels[stat];
         const current = player.levels[stat];
         const healed = current + (constant + (current * percent) / 100);
-        player.levels[stat] = Math.min(healed, base);
+        player.levels[stat] = Math.max(Math.min(healed, base), current);
+
+        if (stat === 3 && player.levels[3] >= player.baseLevels[3]) {
+            player.resetHeroPoints();
+        }
     }),
 
     [ScriptOpcode.UID]: checkedHandler(ActivePlayer, state => {
@@ -480,7 +472,7 @@ const PlayerOps: CommandHandlers = {
         check(com, NumberNotNull);
         check(colour, NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETCOLOUR, com, ColorConversion.rgb24to15(colour));
+        state.activePlayer.write(new IfSetColour(com, ColorConversion.rgb24to15(colour)));
     }),
 
     [ScriptOpcode.IF_OPENCHAT]: checkedHandler(ActivePlayer, state => {
@@ -502,7 +494,7 @@ const PlayerOps: CommandHandlers = {
         check(com, NumberNotNull);
         check(hide, NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETHIDE, com, hide === 1);
+        state.activePlayer.write(new IfSetHide(com, hide === 1));
     }),
 
     [ScriptOpcode.IF_SETOBJECT]: checkedHandler(ActivePlayer, state => {
@@ -512,11 +504,11 @@ const PlayerOps: CommandHandlers = {
         check(obj, ObjTypeValid);
         check(scale, NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETOBJECT, com, obj, scale);
+        state.activePlayer.write(new IfSetObject(com, obj, scale));
     }),
 
     [ScriptOpcode.IF_SETTABACTIVE]: checkedHandler(ActivePlayer, state => {
-        state.activePlayer.writeLowPriority(ServerProt.IF_SHOWSIDE, check(state.popInt(), NumberNotNull));
+        state.activePlayer.write(new IfShowSide(check(state.popInt(), NumberNotNull)));
     }),
 
     [ScriptOpcode.IF_SETMODEL]: checkedHandler(ActivePlayer, state => {
@@ -525,7 +517,7 @@ const PlayerOps: CommandHandlers = {
         check(com, NumberNotNull);
         check(model, NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETMODEL, com, model);
+        state.activePlayer.write(new IfSetModel(com, model));
     }),
 
     [ScriptOpcode.IF_SETRECOL]: checkedHandler(ActivePlayer, state => {
@@ -533,11 +525,11 @@ const PlayerOps: CommandHandlers = {
 
         check(com, NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETRECOL, com, src, dest);
+        state.activePlayer.write(new IfSetRecol(com, src, dest));
     }),
 
     [ScriptOpcode.IF_SETTABFLASH]: checkedHandler(ActivePlayer, state => {
-        state.activePlayer.writeLowPriority(ServerProt.TUTORIAL_FLASHSIDE, check(state.popInt(), NumberNotNull));
+        state.activePlayer.write(new TutorialFlashSide(check(state.popInt(), NumberNotNull)));
     }),
 
     [ScriptOpcode.IF_SETANIM]: checkedHandler(ActivePlayer, state => {
@@ -545,7 +537,12 @@ const PlayerOps: CommandHandlers = {
 
         check(com, NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETANIM, com, seq);
+        if (seq === -1) {
+            // uh, client crashes! which means empty dialogue wasn't an option at the time
+            return;
+        }
+
+        state.activePlayer.write(new IfSetAnim(com, seq));
     }),
 
     [ScriptOpcode.IF_SETTAB]: checkedHandler(ActivePlayer, state => {
@@ -569,14 +566,14 @@ const PlayerOps: CommandHandlers = {
     }),
 
     [ScriptOpcode.IF_SETPLAYERHEAD]: checkedHandler(ActivePlayer, state => {
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETPLAYERHEAD, check(state.popInt(), NumberNotNull));
+        state.activePlayer.write(new IfSetPlayerHead(check(state.popInt(), NumberNotNull)));
     }),
 
     [ScriptOpcode.IF_SETTEXT]: checkedHandler(ActivePlayer, state => {
         const text = state.popString();
         const com = check(state.popInt(), NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETTEXT, com, text);
+        state.activePlayer.write(new IfSetText(com, text));
     }),
 
     [ScriptOpcode.IF_SETNPCHEAD]: checkedHandler(ActivePlayer, state => {
@@ -585,7 +582,7 @@ const PlayerOps: CommandHandlers = {
         check(com, NumberNotNull);
         check(npc, NpcTypeValid);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETNPCHEAD, com, npc);
+        state.activePlayer.write(new IfSetNpcHead(com, npc));
     }),
 
     [ScriptOpcode.IF_SETPOSITION]: checkedHandler(ActivePlayer, state => {
@@ -593,11 +590,11 @@ const PlayerOps: CommandHandlers = {
 
         check(com, NumberNotNull);
 
-        state.activePlayer.writeLowPriority(ServerProt.IF_SETPOSITION, com, x, y);
+        state.activePlayer.write(new IfSetPosition(com, x, y));
     }),
 
     [ScriptOpcode.IF_MULTIZONE]: checkedHandler(ActivePlayer, state => {
-        state.activePlayer.writeLowPriority(ServerProt.SET_MULTIWAY, check(state.popInt(), NumberNotNull) === 1);
+        state.activePlayer.write(new SetMultiway(check(state.popInt(), NumberNotNull) === 1));
     }),
 
     [ScriptOpcode.GIVEXP]: checkedHandler(ProtectedActivePlayer, state => {
@@ -708,6 +705,10 @@ const PlayerOps: CommandHandlers = {
         state.pushInt(state.activePlayer.busy() ? 1 : 0);
     },
 
+    [ScriptOpcode.BUSY2]: state => {
+        state.pushInt(state.activePlayer.hasInteraction() || state.activePlayer.hasWaypoints() ? 1 : 0);
+    },
+
     [ScriptOpcode.GETQUEUE]: state => {
         const scriptId = state.popInt();
 
@@ -732,8 +733,7 @@ const PlayerOps: CommandHandlers = {
         const se: Position = check(southEast, CoordValid);
         const nw: Position = check(northWest, CoordValid);
 
-        const loc = state.activeLoc;
-        World.getZone(loc.x, loc.z, loc.level).mergeLoc(loc, state.activePlayer, startCycle, endCycle, se.z, se.x, nw.z, nw.x);
+        World.mergeLoc(state.activeLoc, state.activePlayer, startCycle, endCycle, se.z, se.x, nw.z, nw.x);
     }),
 
     [ScriptOpcode.LAST_LOGIN_INFO]: state => {
@@ -781,7 +781,12 @@ const PlayerOps: CommandHandlers = {
     },
 
     [ScriptOpcode.BAS_RUNNING]: state => {
-        state.activePlayer.basRunning = check(state.popInt(), SeqTypeValid).id;
+        const seq = state.popInt();
+        if (seq === -1) {
+            state.activePlayer.basRunning = -1;
+            return;
+        }
+        state.activePlayer.basRunning = check(seq, SeqTypeValid).id;
     },
 
     [ScriptOpcode.GENDER]: state => {
@@ -793,7 +798,12 @@ const PlayerOps: CommandHandlers = {
     },
 
     [ScriptOpcode.HINT_PLAYER]: state => {
-        state.activePlayer.hintPlayer(check(state.popInt(), NumberNotNull));
+        const uid = check(state.popInt(), NumberNotNull);
+        const player = World.getPlayerByUid(uid);
+        if (!player) {
+            return;
+        }
+        state.activePlayer.hintPlayer(player.pid);
     },
 
     [ScriptOpcode.HEADICONS_GET]: state => {
@@ -809,14 +819,7 @@ const PlayerOps: CommandHandlers = {
         if (type < 0 || type >= 5) {
             throw new Error(`Invalid opobj: ${type + 1}`);
         }
-        if (state.activePlayer.target !== null) {
-            return;
-        }
-        if (state.activePlayer.hasWaypoints()) {
-            return;
-        }
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
+        state.activePlayer.stopAction();
         state.activePlayer.setInteraction(Interaction.SCRIPT, state.activeObj, ServerTriggerType.APOBJ1 + type);
     }),
 
@@ -825,18 +828,11 @@ const PlayerOps: CommandHandlers = {
         if (type < 0 || type >= 5) {
             throw new Error(`Invalid opplayer: ${type + 1}`);
         }
-        if (state.activePlayer.target !== null) {
-            return;
-        }
-        if (state.activePlayer.hasWaypoints()) {
-            return;
-        }
         const target = state._activePlayer2;
         if (!target) {
             return;
         }
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
+        state.activePlayer.stopAction();
         state.activePlayer.setInteraction(Interaction.SCRIPT, target, ServerTriggerType.APPLAYER1 + type);
     }),
 
@@ -903,23 +899,26 @@ const PlayerOps: CommandHandlers = {
         }
         state.activePlayer.body[slot] = idkType.id;
 
-        // 0 - hair
+        // 0 - hair/jaw
         // 1 - torso
         // 2 - legs
         // 3 - boots
-        // 4 - jaw
+        // 4 - skin
+        let type = idkType.type;
+        if(state.activePlayer.gender === 1) {
+            type -= 7;
+        }
+        // console.log(type);
         let colorSlot = -1;
-        if (idkType.type === 0) {
+        if (type === 0 || type === 1) {
             colorSlot = 0;
-        } else if (idkType.type === 1) {
-            colorSlot = 4;
-        } else if (idkType.type === 2 || idkType.type === 3) {
+        } else if (type === 2 || type === 3) {
             colorSlot = 1;
-        } else if (idkType.type === 4) {
+        } else if (type === 4) {
             /* no-op (no hand recoloring) */
-        } else if (idkType.type === 5) {
+        } else if (type === 5) {
             colorSlot = 2;
-        } else if (idkType.type === 6) {
+        } else if (type === 6) {
             colorSlot = 3;
         }
 
@@ -928,21 +927,74 @@ const PlayerOps: CommandHandlers = {
         }
     },
 
+    [ScriptOpcode.SETGENDER]: (state) => {
+        const gender = check(state.popInt(), GenderValid);
+        // convert idkit
+        for (let i = 0; i < 7; i++) {
+            state.activePlayer.body[i] = -1;
+            for (let j = 0; j < IdkType.count; j++) {
+                if (!IdkType.get(j).disable && IdkType.get(j).type == i + (gender === 0 ? 0 : 7)) {
+                    state.activePlayer.body[i] = j;
+                    break;
+                }
+            }
+        }
+        state.activePlayer.gender = gender;
+    },
+
+    [ScriptOpcode.SETSKINCOLOUR]: (state) => {
+        const skin = check(state.popInt(), SkinColourValid);
+        state.activePlayer.colors[4] = skin;
+    },
+
     [ScriptOpcode.P_OPPLAYERT]: checkedHandler(ProtectedActivePlayer, state => {
         const spellId = check(state.popInt(), NumberNotNull);
-        if (state.activePlayer.target !== null) {
-            return;
-        }
-        if (state.activePlayer.hasWaypoints()) {
-            return;
-        }
         const target = state._activePlayer2;
         if (!target) {
             return;
         }
-        state.activePlayer.clearInteraction();
-        state.activePlayer.closeModal();
+        state.activePlayer.stopAction();
         state.activePlayer.setInteraction(Interaction.SCRIPT, target, ServerTriggerType.APPLAYERT, {type: -1, com: spellId});
+    }),
+
+    [ScriptOpcode.FINDHERO]: checkedHandler(ActivePlayer, state => {
+        const uid = state.activePlayer.findHero();
+        if (uid === -1) {
+            state.pushInt(0);
+            return;
+        }
+
+        const player = World.getPlayerByUid(uid);
+        if (!player) {
+            state.pushInt(0);
+            return;
+        }
+        state._activePlayer2 = player;
+        state.pointerAdd(ScriptPointer.ActivePlayer2);
+        state.pushInt(1);
+    }),
+
+    [ScriptOpcode.BOTH_HEROPOINTS]: checkedHandler(ActivePlayer, state => {
+        const damage: number = check(state.popInt(), NumberNotNull);
+        const secondary: boolean = state.intOperand === 1;
+
+        const fromPlayer: Player | null = secondary ? state._activePlayer2 : state._activePlayer;
+        const toPlayer: Player | null = secondary ? state._activePlayer : state._activePlayer2;
+
+        if (!fromPlayer || !toPlayer) {
+            throw new Error('player is null');
+        }
+
+        toPlayer.addHero(fromPlayer.uid, damage);
+    }),
+
+    [ScriptOpcode.P_ANIMPROTECT]: checkedHandler(ProtectedActivePlayer, state => {
+        state.activePlayer.animProtect = check(state.popInt(), NumberNotNull);
+    }),
+
+    [ScriptOpcode.RUNENERGY]: checkedHandler(ActivePlayer, state => {
+        const player = state.activePlayer;
+        state.pushInt(player.runenergy);
     }),
 };
 

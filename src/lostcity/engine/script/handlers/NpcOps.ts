@@ -1,7 +1,7 @@
-import ParamType from '#lostcity/cache/ParamType.js';
-import NpcType from '#lostcity/cache/NpcType.js';
-import { ParamHelper } from '#lostcity/cache/ParamHelper.js';
-import SpotanimType from '#lostcity/cache/SpotanimType.js';
+import ParamType from '#lostcity/cache/config/ParamType.js';
+import NpcType from '#lostcity/cache/config/NpcType.js';
+import { ParamHelper } from '#lostcity/cache/config/ParamHelper.js';
+import SpotanimType from '#lostcity/cache/config/SpotanimType.js';
 
 import World from '#lostcity/engine/World.js';
 
@@ -22,8 +22,7 @@ import NpcMode from '#lostcity/entity/NpcMode.js';
 import Entity from '#lostcity/entity/Entity.js';
 import Interaction from '#lostcity/entity/Interaction.js';
 import HuntVis from '#lostcity/entity/hunt/HuntVis.js';
-
-import Environment from '#lostcity/util/Environment.js';
+import EntityLifeCycle from '#lostcity/entity/EntityLifeCycle.js';
 
 import {
     check,
@@ -65,10 +64,8 @@ const NpcOps: CommandHandlers = {
         const npcType: NpcType = check(id, NpcTypeValid);
         check(duration, DurationValid);
 
-        const npc = new Npc(position.level, position.x, position.z, npcType.size, npcType.size, World.getNextNid(), npcType.id, npcType.moverestrict, npcType.blockwalk);
-        npc.static = false;
-        npc.despawn = World.currentTick + duration;
-        World.addNpc(npc);
+        const npc = new Npc(position.level, position.x, position.z, npcType.size, npcType.size, EntityLifeCycle.DESPAWN, World.getNextNid(), npcType.id, npcType.moverestrict, npcType.blockwalk);
+        World.addNpc(npc, duration);
         state.activeNpc = npc;
         state.pointerAdd(ActiveNpc[state.intOperand]);
     },
@@ -96,18 +93,10 @@ const NpcOps: CommandHandlers = {
     }),
 
     [ScriptOpcode.NPC_DEL]: checkedHandler(ActiveNpc, state => {
-        if (Environment.CLIRUNNER) {
-            return;
-        }
-
-        World.removeNpc(state.activeNpc);
+        World.removeNpc(state.activeNpc, check(state.activeNpc.type, NpcTypeValid).respawnrate);
     }),
 
     [ScriptOpcode.NPC_DELAY]: checkedHandler(ActiveNpc, state => {
-        if (Environment.CLIRUNNER) {
-            return;
-        }
-
         state.activeNpc.delay = state.popInt() + 1;
         state.execution = ScriptState.NPC_SUSPENDED;
     }),
@@ -174,8 +163,9 @@ const NpcOps: CommandHandlers = {
 
         const npcType: NpcType = check(state.activeNpc.type, NpcTypeValid);
         const script = ScriptProvider.getByTrigger(ServerTriggerType.AI_QUEUE1 + queueId - 1, npcType.id, npcType.category);
+
         if (script) {
-            state.activeNpc.enqueueScript(script, delay, [arg]);
+            state.activeNpc.enqueueScript(script, delay, arg);
         }
     }),
 
@@ -211,15 +201,15 @@ const NpcOps: CommandHandlers = {
 
     [ScriptOpcode.NPC_SETMODE]: checkedHandler(ActiveNpc, state => {
         const mode = check(state.popInt(), NpcModeValid);
-
-        state.activeNpc.targetOp = mode;
         state.activeNpc.clearWaypoints();
 
         if (mode === NpcMode.NULL || mode === NpcMode.NONE || mode === NpcMode.WANDER || mode === NpcMode.PATROL) {
             state.activeNpc.clearInteraction();
+            state.activeNpc.targetOp = mode;
             return;
         }
-
+        
+        state.activeNpc.targetOp = mode;
         let target: Entity | null;
         if (mode >= NpcMode.OPNPC1) {
             target = state._activeNpc2;

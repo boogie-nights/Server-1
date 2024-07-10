@@ -16,7 +16,7 @@ export default class TcpServer {
 
     start() {
         this.tcp.on('connection', (s: net.Socket) => {
-            s.setTimeout(30000);
+            s.setTimeout(60000);
             s.setNoDelay(true);
 
             const ip: string = s.remoteAddress ?? 'unknown';
@@ -51,8 +51,8 @@ export default class TcpServer {
             });
         });
 
-        this.tcp.listen(Environment.GAME_PORT as number, '0.0.0.0', () => {
-            //console.log(`[Maintenance]: Listening on port ${Environment.GAME_PORT}`);
+        this.tcp.listen(Environment.NODE_PORT as number, '0.0.0.0', () => {
+            //console.log(`[Maintenance]: Listening on port ${Environment.NODE_PORT}`);
         });
     }
 }

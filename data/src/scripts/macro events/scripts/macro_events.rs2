@@ -1,20 +1,26 @@
 // timer is initiated on login, in scripts\player\scripts\global.rs2
 [timer,general_macro_events]
 // some general macro events use the %macro_event varp, so if multiple exist, it could cause issues
-if (afk_event = ^false | ~macro_event_general_active = true | %tutorial_progress < ^tutorial_complete) {
+if (~macro_event_general_active = true) {
     return;
 }
-// macro_event varp resets when a random event is due to spawn?
-// Just so the player isnt permanantly stuck at a certain %macro_event value
-if (%macro_event > 0) {
-    %macro_event = ^no_macro_event;
+if (~macro_event_area(coord) = false) { // return before checking so random events are effectively "queued" for when the player leaves a no macro event area
+    return;
 }
-// random events arent restricted in wildy?
-// https://youtu.be/uPKaH7yg4To?t=421
+if (afk_event = ^true) {
+    // macro_event varp resets when a random event is due to spawn?
+    // Just so the player isnt permanantly stuck at a certain %macro_event value
+    if (%macro_event > 0) {
+        %macro_event = ^no_macro_event;
+    }
+    // random events arent restricted in wildy?
+    // https://youtu.be/uPKaH7yg4To?t=421
 
-// Not restricted in banks: https://youtu.be/1Rz9Eg4ZHhA
+    // Not restricted in banks: https://youtu.be/1Rz9Eg4ZHhA
 
-~macro_event_general_spawn(~macro_event_set_random);
+    ~macro_event_general_spawn(~macro_event_set_random);
+}
+
 
 // this is called during:
 // - alching. Confirmed: https://youtu.be/2nqpZoHUjSc?list=PLn23LiLYLb1Y3P9S9qZbijcJihiD416jT
@@ -22,19 +28,16 @@ if (%macro_event > 0) {
 // (probably every spell)
 // - cooking. Confirmed: https://youtu.be/Brq99Bdl0aI?list=PLn23LiLYLb1Y3P9S9qZbijcJihiD416jT&t=198
 // - using flax wheel. Confirmed: https://youtu.be/sW48OR1I86M (early osrs)
-// - using anvil? Cant find a video, not implimented.
-// - fletching? Cant find a video, not implimented.
-// - flax picking? Cant find a video, but it is implimented.
+// - using anvil? Cant find a video, not implemented.
+// - fletching? Cant find a video, not implemented.
+// - flax picking? Cant find a video, but it is implemented.
 // - smithing at furnace. Confirmed? https://youtu.be/a6NobmSGBYw
 // - crafting at furnace. Confirmed: https://youtu.be/7pS6s5rvvEY
 [proc,macro_event_general_spawn](int $event)
-// area check here, because stuff like bones and alching for example can spawn random events.
-if (~in_duel_arena = true) {
+// double check area here, because stuff like bones and alching for example can spawn random events.
+if (~macro_event_area(coord) = false) {
     return;
 }
-// if (~macro_event_general_active = true) {
-//     return;
-// }
 def_coord $event_coord = ~macro_event_coord;
 if ($event_coord = null) {
     return;
@@ -43,11 +46,31 @@ if ($event_coord = null) {
 def_npc $event_npc = ~macro_event_npc($event);
 npc_add($event_coord, $event_npc, 1000);
 %macro_event_uid = npc_uid;
-%npc_attacking_uid = uid;
-npc_queue(4, 0, 0); // greets the player
+switch_int ($event) {
+    case ^macro_event_swarm : ~macro_event_swarm_spawn;
+    case ^macro_event_triffid_friendly : ~macro_event_triffid_spawn;
+    case ^macro_event_drunken_dwarf : ~macro_event_drunken_dwarf_spawn;
+    case ^macro_event_genie : ~macro_event_genie_spawn;
+    case ^macro_event_mysterious_old_man_general : ~macro_event_mysterious_old_man_general_spawn;
+}
+
+[proc,macro_event_area](coord $coord)(boolean)
+if (~in_duel_arena($coord) = true) {
+    return(false);
+}
+if (~inzone_coord_pair_table(gnomeball_zones, coord) = true) {
+    return(false);
+}
+if (~inzone_coord_pair_table(trawler_game_zones, $coord) = true | ~inzone_coord_pair_table(trawler_wreck_zones, $coord) = true) { // allowed on boat in pre-game https://youtu.be/7-gUR40Nr8M
+    return(false);
+}
+if (~in_tutorial_island($coord) = true) {
+    return(false);
+}
+return(true);
 
 // called when the player logs in
-[proc,macro_event_general_check]
+[queue,macro_event_general_check]
 if (~macro_event_general_active = true & nc_param(~macro_event_npc(%macro_event), follow_player_on_logout) = ^true) {
     ~macro_event_general_spawn(%macro_event);
 }
@@ -98,9 +121,8 @@ p_delay(0);
 spotanim_map(small_smokepuff, coord, 124, 0);
 sound_synth(smokepuff2, 0, 0);
 //--
-p_telejump($teleport_coord);
-// TODO: Confirm this
-~teleport_anti_smuggle_checks;
+~p_telejump_safe($teleport_coord); // TODO: Confirm this
+
 
 [proc,macro_event_fail_scatter_inv]
 if (p_finduid(uid) = false) {
@@ -169,26 +191,16 @@ if (%macro_event < add(~macro_event_general_count, 1)){
 if (finduid(%npc_attacking_uid) = false) {
     return(true);
 }
-if (%macro_event_uid ! npc_uid) {
+if (%macro_event_uid ! npc_uid & npc_param(follow_player_on_logout) = ^true) {
     return(true);
 }
 
 if ((npc_range(coord) > 10 | coordy(coord) ! coordy(npc_coord))) {
-    // def_coord $event_coord = ~coord_lineofwalk_radius(coord, 1);
-    // def_int $i = 0;
-    // while ($event_coord = coord) {
-    //     $event_coord = ~coord_lineofwalk_radius(coord, 1);
-    //     $i = calc($i + 1);
-    //     if ($i = 25) {
-    //         // after 25 tries, just disappear
-    //         npc_anim(emote_cry, 20);
-    //         npc_say("I lose more friends that way.");
-    //         ~macro_event_disappear;
-    //         return(true);
-    //     }
-    //
-    if (npc_getmode = playerfollow | npc_getmode = playerfaceclose) {
+    if (~npc_out_of_combat = true) {
         npc_tele(coord); // osrs
+        if (~macro_event_area(coord) = false) {
+            return(true);
+        }
     } else {
         return(true);
     }
@@ -203,7 +215,7 @@ return(false);
 if (finduid(%npc_attacking_uid) = false) {
     return(true);
 }
-if (%macro_event_uid ! npc_uid) {
+if (%macro_event_uid ! npc_uid & npc_param(follow_player_on_logout) = ^true) {
     return(true);
 }
 

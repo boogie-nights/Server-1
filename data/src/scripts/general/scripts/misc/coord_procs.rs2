@@ -111,6 +111,20 @@ while($i < db_getfieldcount($data, coord_pair_table:coord_pair)) {
 }
 return (false);
 
+[proc,.inzone_coord_pair_table](dbrow $data, coord $coord)(boolean)
+def_coord $coord1;
+def_coord $coord2;
+def_int $i = 0;
+while($i < db_getfieldcount($data, coord_pair_table:coord_pair)) {
+    $coord1, $coord2 = db_getfield($data, coord_pair_table:coord_pair, $i);
+    if(.inzone($coord1, $coord2, $coord) = true) {
+        return (true);
+    } else {
+        $i = add($i, 1);
+    }
+}
+return (false);
+
 // returns ^exact_north, ^exact_east, ^exact_south, ^exact_west
 [proc,coord_direction](coord $coord1, coord $coord2)(int)
 def_int $x1 = coordx($coord1);
@@ -247,3 +261,12 @@ def_int $dx = abs(sub($x2, $x1));
 def_int $dz = abs(sub($z2, $z1));
 
 return(add($dx, $dz));
+
+[proc,playercount_coord_pair_table](dbrow $data)(int)
+def_int $sum = 0;
+def_int $i = 0;
+while($i < db_getfieldcount($data, coord_pair_table:coord_pair)) {
+    $sum = add($sum, map_playercount(db_getfield($data, coord_pair_table:coord_pair, $i)));
+    $i = add($i, 1);
+}
+return($sum);

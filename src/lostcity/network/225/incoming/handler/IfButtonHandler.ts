@@ -1,7 +1,7 @@
 import MessageHandler from '#lostcity/network/incoming/handler/MessageHandler.js';
 import Player from '#lostcity/entity/Player.js';
 import IfButton from '#lostcity/network/incoming/model/IfButton.js';
-import Component from '#lostcity/cache/Component.js';
+import Component from '#lostcity/cache/config/Component.js';
 import ScriptProvider from '#lostcity/engine/script/ScriptProvider.js';
 import ScriptRunner from '#lostcity/engine/script/ScriptRunner.js';
 import Environment from '#lostcity/util/Environment.js';
@@ -28,10 +28,8 @@ export default class IfButtonHandler extends MessageHandler<IfButton> {
             const script = ScriptProvider.getByTriggerSpecific(ServerTriggerType.IF_BUTTON, comId, -1);
             if (script) {
                 player.executeScript(ScriptRunner.init(script, player), root.overlay == false);
-            } else {
-                if (Environment.LOCAL_DEV) {
-                    player.messageGame(`No trigger for [if_button,${com.comName}]`);
-                }
+            } else if (Environment.NODE_DEBUG) {
+                player.messageGame(`No trigger for [if_button,${com.comName}]`);
             }
         }
 

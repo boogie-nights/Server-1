@@ -1,4 +1,4 @@
-import DbTableType from '#lostcity/cache/DbTableType.js';
+import DbTableType from '#lostcity/cache/config/DbTableType.js';
 
 import Script from '#lostcity/engine/script/Script.js';
 import ScriptPointer from '#lostcity/engine/script/ScriptPointer.js';
@@ -123,6 +123,8 @@ export default class ScriptState {
     huntIterator: IterableIterator<Entity> | null = null;
     npcIterator: IterableIterator<Npc> | null = null;
     locIterator: IterableIterator<Loc> | null = null;
+
+    lastInt: number = 0;
 
     constructor(script: Script, args: ScriptArgument[] | null = []) {
         this.script = script;

@@ -13,13 +13,14 @@
 [command,npc_huntnext]()(boolean)
 [command,.npc_huntnext]()(boolean)
 [command,inzone](coord $from, coord $to, coord $pos)(boolean)
+[command,.inzone](coord $from, coord $to, coord $pos)(boolean)
 [command,lineofwalk](coord $from, coord $to)(boolean)
 [command,stat_random](int $level, int $low, int $high)(boolean)
 [command,spotanim_map](spotanim $anim, coord $coord, int $height, int $delay)
 [command,distance](coord $coord1, coord $coord2)(int)
 [command,movecoord](coord $coord, int $x, int $y, int $z)(coord)
 [command,seqlength](seq $seq)(int)
-[command,split_init](string $text, int $width, int $lines, fontmetrics $font, mesanim $chathead)
+[command,split_init](string $text, int $width, int $lines, fontmetrics $font)
 [command,split_pagecount]()(int)
 [command,split_get](int $page, int $line)(string)
 [command,split_linecount](int $page)(int)
@@ -38,6 +39,10 @@
 [command,projanim_npc](coord $from, npc_uid $to, spotanim $spotanim, int $fromHeight, int $toHeight, int $delay, int $duration, int $peak, int $arc)
 [command,projanim_map](coord $from, coord $to, spotanim $spotanim, int $fromHeight, int $toHeight, int $delay, int $duration, int $peak, int $arc)
 [command,map_locaddunsafe](coord $coord)(boolean)
+[command,npccount]()(int)
+[command,zonecount]()(int)
+[command,loccount]()(int)
+[command,objcount]()(int)
 
 // Player ops (2000-2499)
 [command,finduid](player_uid $player)(boolean)
@@ -55,11 +60,13 @@
 [command,cam_lookat](coord $destCoord, int $destHeight, int $rotationSpeed, int $rotationMultiplier)
 [command,cam_shake](int $type, int $jitter, int $amplitude, int $frequency)
 [command,cam_reset]
+[command,.cam_reset]
 [command,coord]()(coord)
 [command,.coord]()(coord)
 [command,displayname]()(string)
 [command,.displayname]()(string)
 [command,facesquare](coord $coord)
+[command,.facesquare](coord $coord)
 [command,healenergy](int $amount)
 [command,.healenergy](int $amount)
 [command,if_close]
@@ -149,19 +156,25 @@
 [command,softtimer]/*(softtimer $timer, int $interval, ...)*/
 [command,.softtimer]/*(softtimer $timer, int $interval, ...)*/
 [command,clearsofttimer](softtimer $timer)
+[command,.clearsofttimer](softtimer $timer)
 [command,settimer]/*(timer $timer, int $interval, ...)*/
+[command,.settimer]/*(timer $timer, int $interval, ...)*/
 [command,cleartimer](timer $timer)
+[command,.cleartimer](timer $timer)
 [command,spotanim_pl](spotanim $spotanim, int $height, int $delay)
 [command,.spotanim_pl](spotanim $spotanim, int $height, int $delay)
 [command,hint_stop]
 [command,.hint_stop]
 [command,if_closesticky]
 [command,p_exactmove](coord $startCoord, coord $endCoord, int $startCycle, int $endCycle, int $direction)
-[command,queue](queue $queue, int $delay)
-[command,.queue](queue $queue, int $delay)
+[command,queue](queue $queue, int $delay) // , $arg)
+[command,.queue](queue $queue, int $delay) // , $arg)
 [command,busy]()(boolean)
 [command,.busy]()(boolean)
+[command,busy2]()(boolean)
+[command,.busy2]()(boolean)
 [command,getqueue](queue $queue)(int)
+[command,.getqueue](queue $queue)(int)
 [command,p_locmerge](int $startCycle, int $endCycle, coord $southEast, coord $northWest);
 [command,last_login_info]
 [command,p_teleport](coord $coord)
@@ -202,9 +215,18 @@
 [command,getwalktrigger]()(walktrigger)
 [command,.getwalktrigger]()(walktrigger)
 [command,clearqueue](queue $queue)
+[command,.clearqueue](queue $queue)
 [command,afk_event]()(int)
 [command,lowmemory]()(boolean)
 [command,setidkit](idkit $kit, int $color)
+[command,findhero]()(boolean)
+[command,.findhero]()(boolean)
+[command,both_heropoints](int $damage)
+[command,setgender](int $gender)
+[command,setskincolour](int $skin_colour)
+[command,p_animprotect](int $toggle)
+[command,.p_animprotect](int $toggle)
+[command,runenergy]()(int)
 
 // Npc ops (2500-2999)
 [command,npc_finduid](npc_uid $uid)(boolean)
@@ -222,6 +244,7 @@
 [command,npc_delay](int $delay)
 [command,.npc_delay](int $delay)
 [command,npc_facesquare](coord $coord)
+[command,.npc_facesquare](coord $coord)
 [command,npc_find](coord $coord, npc $npc, int $distance, int $checkvis)(boolean)
 [command,.npc_find](coord $coord, npc $npc, int $distance, int $checkvis)(boolean)
 [command,npc_findallany](coord $coord, int $distance, int $checkvis)(boolean)
@@ -230,6 +253,7 @@
 [command,npc_findhero]()(boolean)
 [command,npc_param]/*(param $param)(dynamic)*/
 [command,npc_queue](int $ai_queue, int $arg, int $delay)
+[command,.npc_queue](int $ai_queue, int $arg, int $delay)
 [command,npc_range](coord $coord)(int)
 [command,npc_say](string $text)
 [command,.npc_say](string $text)
@@ -250,17 +274,20 @@
 [command,npc_uid]()(npc_uid)
 [command,.npc_uid]()(npc_uid)
 [command,npc_settimer](int $interval)
+[command,.npc_settimer](int $interval)
 [command,spotanim_npc](spotanim $spotanim, int $height, int $delay)
 [command,npc_findallzone](coord $coord)
 [command,npc_findnext]()(boolean)
 [command,.npc_findnext]()(boolean)
 [command,npc_tele](coord $coord)
+[command,.npc_tele](coord $coord)
 [command,npc_changetype](npc $type)
 [command,npc_getmode]()(npc_mode)
 [command,npc_heropoints](int $damage)
 [command,npc_walktrigger](int $ai_queue, int $arg)
 [command,.npc_walktrigger](int $ai_queue, int $arg)
 [command,npc_walk](coord $coord)
+[command,.npc_walk](coord $coord)
 [command,npc_attackrange]()(int)
 [command,.npc_attackrange]()(int)
 
@@ -271,20 +298,26 @@
 [command,loc_anim](seq $anim)
 [command,loc_category]()(category)
 [command,loc_change](loc $new_loc, int $duration)
+[command,.loc_change](loc $new_loc, int $duration)
 [command,loc_coord]()(coord)
+[command,.loc_coord]()(coord)
 [command,loc_del](int $duration)
+[command,.loc_del](int $duration)
 [command,loc_find](coord $coord, loc $loc)(boolean)
+[command,.loc_find](coord $coord, loc $loc)(boolean)
 [command,loc_findallzone](coord $coord)
 [command,loc_findnext]()(boolean)
 [command,loc_param]/*(param $param)(dynamic)*/
 [command,loc_type]()(loc)
+[command,.loc_type]()(loc)
 [command,loc_name]()(string)
 [command,loc_shape]()(locshape)
+[command,.loc_shape]()(locshape)
 
 // Obj ops (3500-4000)
-[command,obj_add](coord $coord, obj $obj, int $count, int $duration)
-[command,.obj_add](coord $coord, obj $obj, int $count, int $duration)
-[command,obj_addall](coord $coord, obj $obj, int $count, int $duration)
+[command,obj_add](coord $coord, namedobj $obj, int $count, int $duration)
+[command,.obj_add](coord $coord, namedobj $obj, int $count, int $duration)
+[command,obj_addall](coord $coord, namedobj $obj, int $count, int $duration)
 [command,obj_param]/*(param $param)(dynamic)*/
 [command,obj_name]()(string)
 [command,obj_del]
@@ -380,6 +413,15 @@
 [command,.invother_transmit](player_uid $player, inv $inv, component $component)
 [command,inv_stoptransmit](component $component)
 [command,.inv_stoptransmit](component $component)
+[command,both_dropslot](inv $inv, coord $coord, int $slot, int $duration)
+[command,.both_dropslot](inv $inv, coord $coord, int $slot, int $duration)
+[command,inv_dropall](inv $inv, coord $coord, int $duration)
+[command,.inv_dropall](inv $inv, coord $coord, int $duration)
+// todo: compiler update
+// [command,inv_totalparam]/*(inv $inv, param $param)(int)*/
+// [command,.inv_totalparam]/*(inv $inv, param $param)(int)*/
+// [command,inv_totalparam_stack]/*(inv $inv, param $param)(int)*/
+// [command,.inv_totalparam_stack]/*(inv $inv, param $param)(int)*/
 
 // Enum ops (4400-4499)
 [command,enum] // (type $input, type $output, enum $enum, dynamic $key)(dynamic)
@@ -444,7 +486,19 @@
 
 // Debug ops (10000-11000)
 [command,error](string $text)
-[command,map_localdev]()(boolean)
+[command,map_production]()(boolean)
+[command,map_lastclock]()(int)
+[command,map_lastworld]()(int)
+[command,map_lastclientin]()(int)
+[command,map_lastnpc]()(int)
+[command,map_lastplayer]()(int)
+[command,map_lastlogin]()(int)
+[command,map_lastlogout]()(int)
+[command,map_lastzone]()(int)
+[command,map_lastclientout]()(int)
+[command,map_lastcleanup]()(int)
+[command,map_lastbandwidthin]()(int)
+[command,map_lastbandwidthout]()(int)
 
 // [command,inv_setvar](inv $inv, int $slot, obj $obj, int $value)
 // [command,inv_getvar](inv $inv, int $slot, obj $obj)(int)

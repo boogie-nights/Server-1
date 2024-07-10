@@ -10,6 +10,8 @@ import World from '#lostcity/engine/World.js';
 
 import { NetworkPlayer } from '#lostcity/entity/NetworkPlayer.js';
 import Player, { getExpByLevel, getLevelByExp } from '#lostcity/entity/Player.js';
+import PlayerStat from '#lostcity/entity/PlayerStat.js';
+
 import Environment from '#lostcity/util/Environment.js';
 
 export class PlayerLoading {
@@ -48,9 +50,9 @@ export class PlayerLoading {
             }
 
             // hitpoints starts at level 10
-            player.stats[Player.HITPOINTS] = getExpByLevel(10);
-            player.baseLevels[Player.HITPOINTS] = 10;
-            player.levels[Player.HITPOINTS] = 10;
+            player.stats[PlayerStat.HITPOINTS] = getExpByLevel(10);
+            player.baseLevels[PlayerStat.HITPOINTS] = 10;
+            player.levels[PlayerStat.HITPOINTS] = 10;
             return player;
         }
 
@@ -59,7 +61,7 @@ export class PlayerLoading {
         }
 
         const version = sav.g2();
-        if (version > 2) {
+        if (version > 3) {
             throw new Error('Unsupported player save format');
         }
 
@@ -127,13 +129,23 @@ export class PlayerLoading {
             }
         }
 
+        // afk zones
+        if (version >= 3) {
+            const afkZones: number = sav.g1();
+            for (let index: number = 0; index < afkZones; index++) {
+                player.afkZones[index] = sav.g4();
+            }
+            player.lastAfkZone = sav.g2();
+        }
+
         player.combatLevel = player.getCombatLevel();
         player.lastResponse = World.currentTick;
 
-        if (Environment.LOCAL_DEV) {
+        if (!Environment.NODE_PRODUCTION) {
             player.staffModLevel = 3;
-        } else if (Environment.JMODS.find(name => name === safeName) !== undefined) {
-            player.staffModLevel = 2;
+        } else if (Environment.NODE_STAFF.find(name => name === safeName) !== undefined) {
+            // player.staffModLevel = 2;
+            player.staffModLevel = 3; // todo: revert this back to `= 2` after launch
         }
         return player;
     }

@@ -81,6 +81,12 @@ export const Position = {
         return Math.max(deltaX, deltaZ);
     },
 
+    isWithinDistanceSW(pos: { x: number, z: number }, other: { x: number, z: number }, distance: number) {
+        const dx = Math.abs(pos.x - other.x);
+        const dz = Math.abs(pos.z - other.z);
+        return dz < distance && dx < distance;
+    },
+
     deltaX(dir: Direction): number {
         switch (dir) {
             case Direction.SOUTH_EAST:
@@ -110,14 +116,18 @@ export const Position = {
     },
 
     unpackCoord(coord: number): Position {
-        const level = (coord >> 28) & 0x3;
-        const x = (coord >> 14) & 0x3fff;
-        const z = coord & 0x3fff;
+        const level: number = (coord >> 28) & 0x3;
+        const x: number = (coord >> 14) & 0x3fff;
+        const z: number = coord & 0x3fff;
         return { level, x, z };
     },
 
     packCoord(level: number, x: number, z: number): number {
         return (z & 0x3fff) | ((x & 0x3fff) << 14) | ((level & 0x3) << 28);
+    },
+
+    packZoneCoord(x: number, z: number): number {
+        return ((x & 0x7) << 4) | (z & 0x7);
     },
 
     intersects(srcX: number, srcZ: number, srcWidth: number, srcHeight: number, destX: number, destZ: number, destWidth: number, destHeight: number): boolean {

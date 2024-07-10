@@ -237,8 +237,8 @@ param=strengthbonus,6
 param=damagetype,^stab_style
 param=attack_anim,human_farmersfork_stab
 param=defend_anim,human_farmersfork_defend
-// param=attack_sound,farmersfork_stab
-// possible used earlier staff_stab
+param=attack_sound,staff_stab
+// osrs attack sound farmersfork_stab
 
 [thief]
 name=Thief
@@ -469,7 +469,6 @@ strength=8
 defence=5
 magic=10
 param=magicdefence,3
-huntmode=ranged
 
 [druid]
 name=Druid
@@ -942,6 +941,7 @@ model7=model_262_obj_wear
 model8=model_563_obj_wear
 wanderrange=10
 attackrange=12
+// 10
 respawnrate=25
 hitpoints=50
 attack=0
@@ -957,36 +957,7 @@ param=magicdefence,18
 param=rangedefence,45
 param=damagetype,^ranged_style
 param=attack_anim,human_bow
-param=rangeattack_sound,longbow
-
-[npc_28]
-name=Zoo keeper
-desc=Enjoys locking up animals in small pens.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-vislevel=hide
-recol1s=2340
-recol1d=25299
-recol2s=14724
-recol2d=16737
-recol3s=14801
-recol3d=24075
-recol4s=5299
-recol4d=25299
-model1=model_215_idk
-model2=model_292_idk
-model3=model_250_idk
-model4=model_151_idk
-model5=model_176_idk
-model6=model_271_idk
-model7=model_185_obj_wear
-model8=model_194_npc
-model9=model_327_idk
-model10=model_495_npc
-head1=model_53_idk_head
-head2=model_82_idk_head
-head3=model_37_npc_head
+param=rangeattack_sound,arrowlaunch2
 
 [npc_29]
 name=Chuck
@@ -1157,8 +1128,10 @@ param=magicdefence,-4
 param=rangedefence,16
 param=damagetype,^slash_style
 param=attack_anim,human_sword_slash
-// param=defend_anim,human_sword_defend2
+param=defend_anim,human_sword_defend2
 param=attack_sound,hacksword_slash
+// param=defend_sound,
+// osrs defend sound blade3_mail
 
 [wyson]
 name=Wyson the gardener
@@ -1189,7 +1162,7 @@ param=damagetype,^stab_style
 param=attack_anim,human_farmersfork_stab
 param=defend_anim,human_farmersfork_defend
 param=attack_sound,staff_stab
-// param=attack_sound,farmersfork_stab      original?
+// osrs attack sound farmersfork_stab
 
 [npc_38]
 name=Shipyard worker
@@ -1500,9 +1473,8 @@ param=damagetype,^stab_style
 param=attack_anim,hellhound_attack
 param=defend_anim,hellhound_block
 param=death_anim,hellhound_death
-// param=attack_sound,
-// param=defend_sound,
-// param=death_sound,
+param=attack_sound,growl6
+param=defend_sound,growl5
 huntmode=cowardly
 
 [baby_dragon]
@@ -1601,6 +1573,7 @@ param=attack_sound,dragon_attack
 param=defend_sound,dragon_hit
 param=death_sound,dragon_death
 param=death_drop,dragon_bones
+huntmode=cowardly
 
 [black_dragon]
 size=4
@@ -1957,7 +1930,7 @@ param=damagetype,^crush_style
 param=attack_anim,midget_attackbow
 param=defend_anim,midget_block
 param=death_anim,midget_death
-param=attack_sound,shortbow
+param=attack_sound,arrowlaunch2
 param=defend_sound,gnome_hit
 param=death_sound,gnome_death
 
@@ -1990,7 +1963,7 @@ param=damagetype,^crush_style
 param=attack_anim,midget_attackbow
 param=defend_anim,midget_block
 param=death_anim,midget_death
-param=attack_sound,shortbow
+param=attack_sound,arrowlaunch2
 param=defend_sound,gnome_hit
 param=death_sound,gnome_death
 
@@ -2027,7 +2000,7 @@ param=damagetype,^crush_style
 param=attack_anim,midget_attackbow
 param=defend_anim,midget_block
 param=death_anim,midget_death
-param=attack_sound,shortbow
+param=attack_sound,arrowlaunch2
 param=defend_sound,gnome_hit
 param=death_sound,gnome_death
 
@@ -2793,7 +2766,7 @@ vislevel=hide
 model1=model_2935_npc
 param=death_anim,dog_death
 
-[npc_99]
+[guard_dog]
 name=Guard dog
 desc=Beware of the dog!
 walkanim=dog_walk
@@ -2813,9 +2786,8 @@ param=damagetype,^crush_style
 param=attack_anim,dog_attack
 param=defend_anim,dog_block
 param=death_anim,dog_death
-// TODO param=attack_sound,
-// TODO param=defend_sound,
-// TODO param=death_sound,
+param=attack_sound,wolf_attack2
+param=defend_sound,wolf_hit
 huntmode=cowardly
 
 [goblin_unarmed1]
@@ -4255,7 +4227,6 @@ recol1d=21140
 recol2s=31649
 recol2d=4428
 model1=model_2850_npc
-moverestrict=blocked+normal
 param=death_anim,bird_death
 param=death_sound,bird_death
 
@@ -4268,7 +4239,6 @@ readyanim=bird_ready
 vislevel=hide
 minimap=no
 model1=model_2850_npc
-moverestrict=blocked+normal
 param=death_anim,bird_death
 param=death_sound,bird_death
 
@@ -5137,6 +5107,8 @@ param=attack_anim,human_spear_stab
 param=defend_anim,human_spear_def
 param=attack_sound,staff_stab
 param=poison_severity,55
+// huntmode is just a guess
+huntmode=cowardly
 
 [dark_warrior]
 name=Dark warrior
@@ -5477,6 +5449,7 @@ attack=58
 strength=58
 defence=62
 param=damagetype,^slash_style
+param=max_dealt,0
 
 [npc_206]
 walkanim=dwarf_walk
@@ -5698,535 +5671,6 @@ param=defend_sound,ghost_hit
 param=death_sound,ghost_death
 param=death_drop,null
 param=undead,^true
-
-[npc_253]
-name=Khazard Guard
-desc=It's one of General Khazard's guards.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-op2=Attack
-vislevel=21
-recol1s=15855
-recol1d=5285
-recol2s=2340
-recol2d=3104
-model1=model_230_idk
-model2=model_252_idk
-model3=model_306_obj_wear
-model4=model_152_npc
-model5=model_176_idk
-model6=model_254_idk
-model7=model_185_obj_wear
-model8=model_550_obj_wear
-head1=model_63_idk_head
-head2=model_84_idk_head
-wanderrange=3
-attackrange=5
-respawnrate=50
-hitpoints=25
-attack=20
-strength=18
-defence=20
-param=attackbonus,10
-param=strengthbonus,14
-param=stabdefence,44
-param=slashdefence,38
-param=crushdefence,30
-param=damagetype,^slash_style
-param=attack_anim,human_baxe_slash
-param=defend_anim,human_baxe_defend2
-param=attack_sound,baxe_slash
-// param=defend_sound,blade3_mail
-
-[npc_254]
-name=Khazard Guard
-desc=It's one of General Khazard's guards.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-op2=Attack
-vislevel=21
-recol1s=15855
-recol1d=5285
-recol2s=2340
-recol2d=3104
-model1=model_230_idk
-model2=model_253_idk
-model3=model_306_obj_wear
-model4=model_152_npc
-model5=model_176_idk
-model6=model_254_idk
-model7=model_185_obj_wear
-model8=model_550_obj_wear
-head1=model_63_idk_head
-head2=model_85_idk_head
-wanderrange=4
-attackrange=6
-respawnrate=50
-hitpoints=25
-attack=20
-strength=18
-defence=20
-param=attackbonus,10
-param=strengthbonus,14
-param=stabdefence,44
-param=slashdefence,38
-param=crushdefence,30
-param=damagetype,^slash_style
-param=attack_anim,human_baxe_slash
-param=defend_anim,human_baxe_defend2
-param=attack_sound,baxe_slash
-// param=defend_sound,blade3_mail
-
-[npc_255]
-name=Khazard Guard
-desc=It's one of General Khazard's guards.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-op2=Attack
-vislevel=21
-recol1s=15855
-recol1d=5285
-recol2s=2340
-recol2d=3104
-model1=model_219_obj_wear
-model2=model_246_idk
-model3=model_306_obj_wear
-model4=model_152_npc
-model5=model_176_idk
-model6=model_254_idk
-model7=model_185_obj_wear
-model8=model_550_obj_wear
-head1=model_57_obj_wear
-wanderrange=4
-attackrange=6
-respawnrate=50
-hitpoints=25
-attack=20
-strength=18
-defence=20
-param=attackbonus,10
-param=strengthbonus,14
-param=stabdefence,44
-param=slashdefence,38
-param=crushdefence,30
-param=damagetype,^slash_style
-param=attack_anim,human_baxe_slash
-param=defend_anim,human_baxe_defend2
-param=attack_sound,baxe_slash
-// param=defend_sound,blade3_mail
-
-[npc_256]
-name=Khazard Guard
-desc=It's one of General Khazard's guards.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-op2=Attack
-vislevel=21
-recol1s=15855
-recol1d=5285
-recol2s=2340
-recol2d=3104
-model1=model_219_obj_wear
-model2=model_253_idk
-model3=model_306_obj_wear
-model4=model_152_npc
-model5=model_176_idk
-model6=model_254_idk
-model7=model_185_obj_wear
-model8=model_550_obj_wear
-head1=model_57_obj_wear
-head2=model_85_idk_head
-wanderrange=4
-attackrange=6
-respawnrate=50
-hitpoints=25
-attack=20
-strength=18
-defence=20
-param=attackbonus,10
-param=strengthbonus,14
-param=stabdefence,44
-param=slashdefence,38
-param=crushdefence,30
-param=damagetype,^slash_style
-param=attack_anim,human_baxe_slash
-param=defend_anim,human_baxe_defend2
-param=attack_sound,baxe_slash
-// param=defend_sound,blade3_mail
-
-[npc_257]
-name=Khazard Guard
-desc=It's one of General Khazard's guards.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-vislevel=25
-recol1s=15855
-recol1d=5285
-recol2s=2340
-recol2d=3104
-model1=model_230_idk
-model2=model_252_idk
-model3=model_306_obj_wear
-model4=model_152_npc
-model5=model_176_idk
-model6=model_254_idk
-model7=model_185_obj_wear
-model8=model_550_obj_wear
-head1=model_63_idk_head
-head2=model_84_idk_head
-respawnrate=50
-hitpoints=25
-attack=20
-strength=18
-defence=20
-param=attackbonus,10
-param=strengthbonus,14
-param=stabdefence,44
-param=slashdefence,38
-param=crushdefence,30
-param=damagetype,^slash_style
-param=attack_anim,human_baxe_slash
-param=defend_anim,human_baxe_defend2
-param=attack_sound,baxe_slash
-// param=defend_sound,blade3_mail
-
-[general_khazard]
-name=General Khazard
-desc=He looks really nasty. Smells bad too.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-op2=Attack
-vislevel=112
-recol1s=15855
-recol1d=5285
-recol2s=14798
-recol2d=5285
-model1=model_209_npc
-model2=model_306_obj_wear
-model3=model_164_obj_wear
-model4=model_179_obj_wear
-model5=model_268_obj_wear
-model6=model_185_obj_wear
-model7=model_546_obj_wear
-model8=model_323_obj_wear
-head1=model_149_npc_head
-wanderrange=1
-hitpoints=170
-attack=75
-strength=78
-defence=80
-param=damagetype,^slash_style
-param=attack_anim,human_2h_slash
-param=defend_anim,human_2h_sword_defend
-// param=attack_sound,
-// param=defend_sound,
-// osrs use attack seq_406
-
-[npc_259]
-vislevel=hide
-name=Khazard barman
-desc=A tough looking barman.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=2340
-recol1d=4226
-recol2s=14724
-recol2d=27481
-recol3s=14801
-recol3d=24075
-model1=model_230_idk
-model2=model_247_idk
-model3=model_292_idk
-model4=model_151_idk
-model5=model_176_idk
-model6=model_254_idk
-model7=model_181_idk
-model8=model_326_idk
-head1=model_63_idk_head
-head2=model_79_idk_head
-wanderrange=4
-
-[npc_260]
-vislevel=hide
-name=Kelvin
-desc=A fightslave. He looks mistreated and weak.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=7298
-recol1d=24075
-recol2s=2340
-recol2d=7362
-recol3s=14724
-recol3d=16709
-model1=model_214_idk
-model2=model_246_idk
-model3=model_310_idk
-model4=model_151_idk
-model5=model_176_idk
-model6=model_275_idk
-model7=model_181_idk
-head1=model_52_idk_head
-wanderrange=1
-
-[npc_261]
-vislevel=hide
-name=Joe
-desc=A fightslave. He looks mistreated and weak.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=7298
-recol1d=25166
-recol2s=2340
-recol2d=7362
-recol3s=6273
-recol3d=10401
-recol4s=14724
-recol4d=15686
-recol5s=24075
-recol5d=25166
-model1=model_206_idk
-model2=model_246_idk
-model3=model_310_idk
-model4=model_151_idk
-model5=model_176_idk
-model6=model_275_idk
-model7=model_181_idk
-model8=model_326_idk
-head1=model_46_idk_head
-wanderrange=1
-
-[npc_262]
-vislevel=hide
-name=Fightslave
-desc=A fightslave. He looks mistreated and weak.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=7298
-recol1d=24075
-recol2s=2340
-recol2d=7298
-model1=model_214_idk
-model2=model_246_idk
-model3=model_310_idk
-model4=model_151_idk
-model5=model_176_idk
-model6=model_275_idk
-model7=model_181_idk
-head1=model_52_idk_head
-wanderrange=1
-
-[npc_263]
-vislevel=hide
-name=Hengrad
-desc=He looks mistreated and weak.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=7298
-recol1d=24075
-recol2s=2340
-recol2d=7362
-recol3s=14724
-recol3d=14730
-model1=model_230_idk
-model2=model_246_idk
-model3=model_310_idk
-model4=model_151_idk
-model5=model_176_idk
-model6=model_275_idk
-model7=model_181_idk
-head1=model_63_idk_head
-wanderrange=1
-
-[npc_264]
-vislevel=hide
-name=Lady Servil
-desc=She looks wealthy.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=2340
-recol1d=2387
-recol2s=14724
-recol2d=6649
-recol3s=14724
-recol3d=27551
-model1=model_378_idk
-model2=model_456_idk
-model3=model_348_idk
-model4=model_353_idk
-model5=model_428_idk
-model6=model_358_idk
-head1=model_103_idk_head
-param=death_sound,female_death
-
-[npc_265]
-vislevel=hide
-name=Jeremy Servil
-desc=A young squire. He looks worse for wear.
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Talk-to
-recol1s=416
-recol1d=13360
-recol2s=14724
-recol2d=13360
-model1=model_2918_npc
-model2=model_2910_npc
-model3=model_2906_npc
-head1=model_53_idk_head
-wanderrange=1
-param=death_anim,midget_death
-
-[npc_266]
-vislevel=hide
-name=Jeremy Servil
-desc=A young squire. He looks worse for wear.
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Talk-to
-recol1s=416
-recol1d=13360
-recol2s=14724
-recol2d=13360
-model1=model_2918_npc
-model2=model_2910_npc
-model3=model_2906_npc
-head1=model_53_idk_head
-wanderrange=1
-param=death_anim,midget_death
-
-[npc_267]
-vislevel=hide
-name=Justin Servil
-desc=Jeremy's father Sir Servil.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=7298
-recol1d=24075
-recol2s=2340
-recol2d=7298
-model1=model_230_idk
-model2=model_250_idk
-model3=model_310_idk
-model4=model_151_idk
-model5=model_176_idk
-model6=model_275_idk
-model7=model_181_idk
-head1=model_63_idk_head
-head2=model_82_idk_head
-wanderrange=7
-
-[npc_268]
-vislevel=hide
-name=Local
-desc=A scruffy looking chap.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_ready
-op1=Talk-to
-recol1s=14724
-recol1d=8192
-recol2s=2340
-recol2d=8456
-model1=model_230_idk
-model2=model_249_idk
-model3=model_236_obj_wear
-model4=model_299_npc
-model5=model_167_idk
-model6=model_179_obj_wear
-model7=model_275_idk
-model8=model_185_obj_wear
-head1=model_63_idk_head
-head2=model_68_obj_wear
-
-[bouncer]
-size=2
-walkanim=hellhound_walk
-readyanim=hellhound_ready
-name=Bouncer
-desc=Nice doggy.
-op2=Attack
-vislevel=132
-model1=model_2997_npc
-respawnrate=50
-hitpoints=116
-attack=120
-strength=120
-defence=120
-param=damagetype,^stab_style
-param=attack_anim,hellhound_attack
-param=defend_anim,hellhound_block
-param=death_anim,hellhound_death
-// param=attack_sound,
-// param=defend_sound,
-// param=death_sound,
-
-[npc_270]
-name=Khazard Ogre
-desc=Khazard's strongest ogre warrior.
-size=2
-walkanim=ogre_walk
-readyanim=ogre_ready
-op2=Attack
-vislevel=55
-model1=model_2880_npc
-model2=model_2876_npc
-// TODO respawnrate
-hitpoints=60
-attack=54
-strength=53
-defence=53
-param=attackbonus,22
-param=strengthbonus,20
-param=attackrate,6
-param=damagetype,^crush_style
-param=attack_anim,ogre_attack
-param=defend_anim,ogre_block
-param=death_anim,ogre_death
-// param=attack_sound,
-// param=defend_sound,
-param=death_sound,giant_death
-param=death_drop,big_bones
-
-[npc_271]
-name=Khazard Scorpion
-desc=A large angry scorpion.
-size=2
-walkanim=scorpion_walk
-readyanim=scorpion_ready
-op2=Attack
-vislevel=44
-recol1s=16677
-recol1d=10570
-recol2s=11426
-recol2d=6342
-model1=model_2967_npc
-// TODO respawnrate
-hitpoints=40
-attack=40
-strength=39
-defence=34
-param=stabdefence,5
-param=slashdefence,15
-param=crushdefence,15
-param=damagetype,^stab_style
-param=attack_anim,scorpion_attack
-param=defend_anim,scorpion_parry
-param=death_anim,scorpion_death
-param=attack_sound,insect_attack
-param=defend_sound,insect_hit
-param=death_sound,insect_death
-param=death_drop,null
 
 [npc_272]
 name=Lucien
@@ -8182,266 +7626,6 @@ model8=model_185_obj_wear
 model9=model_326_idk
 head1=model_53_idk_head
 
-[npc_621]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Tackle
-recol1s=9513
-recol1d=25699
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-wanderrange=4
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_622]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Tackle
-recol1s=9513
-recol1d=25699
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2921_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_623]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_seq_205
-readyanim=midget_seq_205
-recol1s=9513
-recol1d=25699
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_624]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_seq_208
-readyanim=midget_seq_208
-recol1s=9513
-recol1d=25699
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_625]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Tackle
-recol1s=9513
-recol1d=28001
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-wanderrange=3
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_626]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Tackle
-recol1s=9513
-recol1d=28001
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2921_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_627]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_seq_205
-readyanim=midget_seq_205
-recol1s=9513
-recol1d=28001
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_628]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_seq_208
-readyanim=midget_seq_208
-recol1s=9513
-recol1d=28001
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_629]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Tackle
-recol1s=9513
-recol1d=26305
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-wanderrange=3
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_630]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Tackle
-recol1s=9513
-recol1d=26305
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2921_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_631]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_seq_205
-readyanim=midget_seq_205
-recol1s=9513
-recol1d=26305
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_632]
-name=Gnome baller
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_seq_208
-readyanim=midget_seq_208
-recol1s=9513
-recol1d=26305
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_633]
-name=Gnome winger
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Talk-to
-recol1s=9513
-recol1d=704
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2924_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_634]
-name=Gnome winger
-desc=A professional gnome baller.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Talk-to
-recol1s=9513
-recol1d=704
-model1=model_2914_npc
-model2=model_2905_npc
-model3=model_2921_npc
-head1=model_21_npc_head
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_635]
-name=Gnome ball referee
-desc=Keeps the game fair.
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Talk-to
-recol1s=416
-recol1d=2114
-recol2s=24075
-recol2d=13537
-recol3s=21961
-recol3d=13537
-recol4s=20904
-recol4d=13537
-model1=model_2909_npc
-model2=model_2900_npc
-model3=model_2915_npc
-head1=model_23_npc_head
-wanderrange=1
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
-[npc_636]
-name=Cheerleader
-desc=Cheerleading is a real sport!
-vislevel=hide
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Talk-to
-model1=model_2913_npc
-model2=model_2904_npc
-model3=model_2923_npc
-head1=model_21_npc_head
-wanderrange=0
-moverestrict=nomove
-param=death_anim,midget_death
-param=death_sound,gnome_death
-
 [npc_663]
 vislevel=hide
 name=Man
@@ -8503,7 +7687,7 @@ param=death_sound,demon_death
 param=death_drop,ashes
 huntmode=cowardly
 
-[npc_669]
+[hazelmere]
 name=Hazelmere
 desc=An ancient looking gnome.
 walkanim=midget_walk
@@ -8834,37 +8018,6 @@ head1=model_67_idk_head
 head2=model_79_idk_head
 wanderrange=2
 
-[npc_740]
-vislevel=hide
-name=Trufitus
-desc=A wise old witch doctor.
-walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r
-readyanim=human_staffready
-op1=Talk-to
-recol1s=6273
-recol1d=21140
-recol2s=14801
-recol2d=14596
-recol3s=2340
-recol3d=12480
-recol4s=6144
-recol4d=12480
-recol5s=24075
-recol5d=14596
-recol6s=13603
-recol6d=21140
-model1=model_210_idk
-model2=model_250_idk
-model3=model_309_npc
-model4=model_173_npc
-model5=model_176_idk
-model6=model_265_obj_wear
-model7=model_181_idk
-model8=model_553_npc
-head1=model_49_idk_head
-head2=model_82_idk_head
-moverestrict=indoors
-
 [npc_759]
 vislevel=hide
 name=Gertrudes cat
@@ -8877,6 +8030,8 @@ resizeh=80
 resizev=80
 model1=model_3010_npc
 model2=model_3006_obj
+members=yes
+param=attack_anim,cat_attack
 param=death_anim,cat_death
 
 [npc_760]
@@ -9021,6 +8176,7 @@ op1=Search
 minimap=no
 model1=model_loc_0_8
 wanderrange=0
+members=yes
 moverestrict=nomove
 blockwalk=all
 
@@ -9293,6 +8449,7 @@ model5=model_428_idk
 model6=model_358_idk
 model7=model_444_obj_wear
 head1=model_113_idk_head
+members=yes
 param=death_sound,female_death
 
 [npc_781]
@@ -9315,6 +8472,7 @@ model2=model_2909_npc
 model3=model_2918_npc
 head1=model_139_npc_head
 wanderrange=2
+members=yes
 param=death_anim,midget_death
 
 [npc_782]
@@ -9333,24 +8491,7 @@ model2=model_2909_npc
 model3=model_2918_npc
 head1=model_139_npc_head
 moverestrict=indoors
-param=death_anim,midget_death
-
-[npc_783]
-vislevel=hide
-name=Wilough
-desc=One of Gertrude's Sons.
-walkanim=midget_walk
-readyanim=midget_ready
-op1=Talk-to
-recol1s=416
-recol1d=992
-recol2s=384
-recol2d=26425
-model1=model_2897_npc
-model2=model_2909_npc
-model3=model_2918_npc
-head1=model_139_npc_head
-wanderrange=2
+members=yes
 param=death_anim,midget_death
 
 [npc_784]
@@ -9369,6 +8510,7 @@ model2=model_2909_npc
 model3=model_2918_npc
 head1=model_139_npc_head
 moverestrict=indoors
+members=yes
 param=death_anim,midget_death
 
 [npc_788]
@@ -10005,7 +9147,6 @@ vislevel=1
 model1=model_2936_npc
 timer=1
 param=death_anim,dog_death
-// TODO sound
 
 [npc_822]
 vislevel=hide
@@ -10989,7 +10130,8 @@ param=strengthbonus,3
 param=rangebonus,7
 param=attack_anim,human_staff_pound
 param=defend_anim,human_staff_def
-// param=attack_sound,staff_double
+param=attack_sound,staff_hit
+// osrs attack sound staff_double
 
 [npc_930]
 name=Ungadulu
@@ -11034,7 +10176,8 @@ param=strengthbonus,3
 param=rangebonus,7
 param=attack_anim,human_staff_pound
 param=defend_anim,human_staff_def
-// osrs param=attack_sound,staff_double
+param=attack_sound,staff_hit
+// osrs attack sound staff_double
 // sound and animation data taken normal version ungadulu
 // wander distance attack distance missing.
 
@@ -12266,7 +11409,7 @@ op1=Take
 model1=model_560_npc
 wanderrange=2
 
-[npc_1007]
+[zamorak_wizard]
 name=Zamorak Wizard
 desc=A servant of Zamorak.
 walkanim=human_walk_f,human_walk_b,human_walk_l,human_walk_r

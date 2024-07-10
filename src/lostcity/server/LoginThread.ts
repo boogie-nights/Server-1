@@ -75,7 +75,7 @@ parentPort.on('message', async msg => {
                 }
 
                 const uid = stream.g4();
-                const username = toSafeName(stream.gjstr());
+                const username = stream.gjstr();
                 const password = stream.gjstr();
 
                 if (username.length < 1 || username.length > 12) {
@@ -98,7 +98,7 @@ parentPort.on('message', async msg => {
                     }
 
                     const login = new LoginClient();
-                    const request = await login.load(toBase37(username), password, uid);
+                    const request = await login.load(toBase37(toSafeName(username)), password, uid);
 
                     if (request.reply === 1 && request.data) {
                         parentPort.postMessage({
@@ -162,8 +162,9 @@ parentPort.on('message', async msg => {
                     }
                 } else {
                     let save = new Uint8Array();
-                    if (fs.existsSync(`data/players/${username}.sav`)) {
-                        save = await fsp.readFile(`data/players/${username}.sav`);
+                    const safeName = toSafeName(username);
+                    if (fs.existsSync(`data/players/${safeName}.sav`)) {
+                        save = await fsp.readFile(`data/players/${safeName}.sav`);
                     }
 
                     parentPort.postMessage({
@@ -172,7 +173,7 @@ parentPort.on('message', async msg => {
                         socket,
                         info,
                         seed,
-                        username: toSafeName(username),
+                        username: safeName,
                         save
                     });
                 }

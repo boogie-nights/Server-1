@@ -1,7 +1,7 @@
 import MessageHandler from '#lostcity/network/incoming/handler/MessageHandler.js';
 import OpLoc from '#lostcity/network/incoming/model/OpLoc.js';
 import World from '#lostcity/engine/World.js';
-import LocType from '#lostcity/cache/LocType.js';
+import LocType from '#lostcity/cache/config/LocType.js';
 import ServerTriggerType from '#lostcity/engine/script/ServerTriggerType.js';
 import Interaction from '#lostcity/entity/Interaction.js';
 import { NetworkPlayer } from '#lostcity/entity/NetworkPlayer.js';
@@ -15,10 +15,10 @@ export default class OpLocHandler extends MessageHandler<OpLoc> {
             return false;
         }
 
-        const absLeftX = player.loadedX - 52;
-        const absRightX = player.loadedX + 52;
-        const absTopZ = player.loadedZ + 52;
-        const absBottomZ = player.loadedZ - 52;
+        const absLeftX = player.originX - 52;
+        const absRightX = player.originX + 52;
+        const absTopZ = player.originZ + 52;
+        const absBottomZ = player.originZ - 52;
         if (x < absLeftX || x > absRightX || z < absBottomZ || z > absTopZ) {
             return false;
         }
@@ -31,6 +31,7 @@ export default class OpLocHandler extends MessageHandler<OpLoc> {
 
         const locType = LocType.get(loc.type);
         if (!locType.op || !locType.op[message.op - 1]) {
+            player.unsetMapFlag();
             return false;
         }
 
@@ -47,8 +48,7 @@ export default class OpLocHandler extends MessageHandler<OpLoc> {
             mode = ServerTriggerType.APLOC5;
         }
 
-        player.clearInteraction();
-        player.closeModal();
+        player.clearPendingAction();
         player.setInteraction(Interaction.ENGINE, loc, mode);
         player.opcalled = true;
         return true;

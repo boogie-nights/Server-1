@@ -67,6 +67,10 @@ enum ScriptOpcode {
     STAT_RANDOM,
     STRUCT_PARAM,
     WORLD_DELAY, // official
+    NPCCOUNT,
+    ZONECOUNT,
+    LOCCOUNT,
+    OBJCOUNT,
 
     // Player ops (2000-2499)
     ALLOWDESIGN = 2000,
@@ -160,8 +164,8 @@ enum ScriptOpcode {
     P_WALK, // official
     PLAYER_FINDALLZONE, // todo: replace with huntall
     PLAYER_FINDNEXT, // todo: replace with huntnext
-    QUEUE,
-    SAY,
+    QUEUE, // official
+    SAY, // official
     WALKTRIGGER, // official
     SETTIMER,
     SOFTTIMER, // official
@@ -182,6 +186,13 @@ enum ScriptOpcode {
     SETIDKIT,
     P_CLEARPENDINGACTION, // official
     GETWALKTRIGGER, // official
+    BUSY2, // official
+    FINDHERO, // official
+    BOTH_HEROPOINTS, // official
+    SETGENDER,
+    SETSKINCOLOUR,
+    P_ANIMPROTECT,
+    RUNENERGY,
 
     // Npc ops (2500-2999)
     NPC_ADD = 2500, // official
@@ -318,6 +329,10 @@ enum ScriptOpcode {
     INV_TRANSMIT,
     INVOTHER_TRANSMIT,
     INV_STOPTRANSMIT,
+    BOTH_DROPSLOT,
+    INV_DROPALL,
+    INV_TOTALPARAM, // official, see cs2
+    INV_TOTALPARAM_STACK, // official, see cs2
 
     // Enum ops (4400-4499)
     ENUM = 4400, // official
@@ -397,7 +412,19 @@ enum ScriptOpcode {
 
     // Debug ops (10000-11000)
     ERROR = 10000,
-    MAP_LOCALDEV
+    MAP_PRODUCTION,
+    MAP_LASTCLOCK,
+    MAP_LASTWORLD,
+    MAP_LASTCLIENTIN,
+    MAP_LASTNPC,
+    MAP_LASTPLAYER,
+    MAP_LASTLOGOUT,
+    MAP_LASTLOGIN,
+    MAP_LASTZONE,
+    MAP_LASTCLIENTOUT,
+    MAP_LASTCLEANUP,
+    MAP_LASTBANDWIDTHIN,
+    MAP_LASTBANDWIDTHOUT,
 }
 
 export default ScriptOpcode;

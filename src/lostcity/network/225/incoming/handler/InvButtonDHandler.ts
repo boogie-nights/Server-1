@@ -1,12 +1,12 @@
 import MessageHandler from '#lostcity/network/incoming/handler/MessageHandler.js';
 import Player from '#lostcity/entity/Player.js';
 import InvButtonD from '#lostcity/network/incoming/model/InvButtonD.js';
-import Component from '#lostcity/cache/Component.js';
+import Component from '#lostcity/cache/config/Component.js';
 import Environment from '#lostcity/util/Environment.js';
 import ScriptProvider from '#lostcity/engine/script/ScriptProvider.js';
 import ScriptRunner from '#lostcity/engine/script/ScriptRunner.js';
 import ServerTriggerType from '#lostcity/engine/script/ServerTriggerType.js';
-import ServerProt from '#lostcity/server/ServerProt.js';
+import UpdateInvPartial from '#lostcity/network/outgoing/model/UpdateInvPartial.js';
 
 export default class InvButtonDHandler extends MessageHandler<InvButtonD> {
     handle(message: InvButtonD, player: Player): boolean {
@@ -30,7 +30,7 @@ export default class InvButtonDHandler extends MessageHandler<InvButtonD> {
 
         if (player.delayed()) {
             // do nothing; revert the client visual
-            player.writeHighPriority(ServerProt.UPDATE_INV_PARTIAL, comId, inv, [slot, targetSlot]);
+            player.write(new UpdateInvPartial(comId, inv, slot, targetSlot));
             return false;
         }
 
@@ -42,10 +42,8 @@ export default class InvButtonDHandler extends MessageHandler<InvButtonD> {
             const root = Component.get(com.rootLayer);
 
             player.executeScript(ScriptRunner.init(dragTrigger, player), root.overlay == false);
-        } else {
-            if (Environment.LOCAL_DEV) {
-                player.messageGame(`No trigger for [inv_buttond,${com.comName}]`);
-            }
+        } else if (Environment.NODE_DEBUG) {
+            player.messageGame(`No trigger for [inv_buttond,${com.comName}]`);
         }
 
         return true;

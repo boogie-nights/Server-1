@@ -1,11 +1,11 @@
 // - edit: elvarg was reworked after the dragon slayer rework. So no ap
 // - im guessing dragons worked the same
-// [ai_queue1,green_dragon](int $arg) ~npc_default_retaliate_ap;
-// [ai_queue1,baby_dragon](int $arg) ~npc_default_retaliate_ap;
-// [ai_queue1,baby_blue_dragon](int $arg) ~npc_default_retaliate_ap;
-// [ai_queue1,red_dragon](int $arg) ~npc_default_retaliate_ap;
-// [ai_queue1,blue_dragon](int $arg) ~npc_default_retaliate_ap;
-// [ai_queue1,black_dragon](int $arg) ~npc_default_retaliate_ap;
+// [ai_queue1,green_dragon] ~npc_default_retaliate_ap;
+// [ai_queue1,baby_dragon] ~npc_default_retaliate_ap;
+// [ai_queue1,baby_blue_dragon] ~npc_default_retaliate_ap;
+// [ai_queue1,red_dragon] ~npc_default_retaliate_ap;
+// [ai_queue1,blue_dragon] ~npc_default_retaliate_ap;
+// [ai_queue1,black_dragon] ~npc_default_retaliate_ap;
 
 // [ai_applayer2,green_dragon] @dragon_ai_applayer2;
 // [ai_applayer2,baby_dragon] @dragon_ai_applayer2;
@@ -94,6 +94,7 @@ def_int $defence_roll = ~player_defence_roll_specific(npc_param(damagetype));
 def_int $maxhit = 30;
 if (inv_total(worn, dragonfire_shield) > 0) {
     $maxhit = 5;
+    mes("Your shield absorbs most of the dragon fire!"); // late 2004
 } else if (%prayer_protectfrommagic = ^true) {
     $maxhit = 10;
 } else if (randominc($attack_roll) > randominc($defence_roll)) {
