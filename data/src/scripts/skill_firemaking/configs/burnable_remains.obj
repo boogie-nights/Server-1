@@ -13,8 +13,8 @@ recol1d=6437
 weight=4g
 tradeable=yes
 param=firemaking_req,1
-param=firemaking_exp,150
-param=prayer_exp,105
+param=firemaking_exp,125
+param=prayer_exp,7.5
 
 [plague_bear_fur]
 name=Plague-bear fur
@@ -30,9 +30,9 @@ recol1d=6437
 cost=10
 weight=3kg
 tradeable=yes
-param=firemaking_req,1
-param=firemaking_exp,150
-param=prayer_exp,105
+param=firemaking_req,15
+param=firemaking_exp,187
+param=prayer_exp,120
 
 [plague_wolf_fur]
 model=model_2631_obj
@@ -48,9 +48,9 @@ cost=50
 weight=3kg
 members=yes
 tradeable=yes
-param=firemaking_req,1
-param=firemaking_exp,150
-param=prayer_exp,105
+param=firemaking_req,30
+param=firemaking_exp,450
+param=prayer_exp,150
 
 [plague_unicorn_horn]
 name=Plague-unicorn horn
@@ -64,9 +64,9 @@ model=model_2495_obj
 members=yes
 cost=20
 weight=7g
-param=firemaking_req,1
-param=firemaking_exp,150
-param=prayer_exp,105
+param=firemaking_req,30
+param=firemaking_exp,450
+param=prayer_exp,150
 
 [plague_giant_remains]
 name=Plague-giant bones
@@ -79,6 +79,6 @@ recol1d=6437
 2dxan=216
 weight=800g
 tradeable=yes
-param=firemaking_req,1
-param=firemaking_exp,150
-param=prayer_exp,105
+param=firemaking_req,60
+param=firemaking_exp,1012
+param=prayer_exp,720

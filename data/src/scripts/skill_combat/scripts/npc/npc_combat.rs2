@@ -232,7 +232,7 @@ if (~inzone_coord_pair_table(multiway_zones, npc_coord) = false & %npc_attacking
 
 // Called every time the NPC attacks
 [proc,npc_set_attack_vars]
-mes("npc_set_attack_vars");
+//mes("npc_set_attack_vars");
 %lastcombat = map_clock;
 %npc_lastattack = map_clock;
 %npc_attacking_uid = uid;

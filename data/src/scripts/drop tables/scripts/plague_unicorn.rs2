@@ -1,0 +1,11 @@
+[ai_queue3,plague_unicorn] @plague_unicorn_droptable;
+
+
+[label,plague_unicorn_droptable]
+gosub(npc_death);
+if (npc_findhero = false) {
+    return;
+}
+
+obj_add(npc_coord, npc_param(death_drop), 1, ^lootdrop_duration);
+obj_add(npc_coord, plague_unicorn_horn, 1, ^lootdrop_duration);

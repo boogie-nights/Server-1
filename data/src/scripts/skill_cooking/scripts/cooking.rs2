@@ -1,7 +1,11 @@
 [oplocu,_cooking_oven] @attempt_cook_item(last_useitem);
 [oplocu,_cooking_fire]
 switch_obj(last_useitem) {
-    case plague_rat_corpse : @burn_plague_remains_single(last_useitem);
+    case plague_rat_corpse: @burn_plague_remains_single(last_useitem);
+    case plague_bear_fur: @burn_plague_remains_single(last_useitem);
+    case plague_wolf_fur: @burn_plague_remains_single(last_useitem);
+    case plague_unicorn_horn: @burn_plague_remains_single(last_useitem);
+    case plague_giant_remains: @burn_plague_remains_single(last_useitem);
     case default: @cooking_food;
 }
 

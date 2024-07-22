@@ -1,4 +1,4 @@
-[ai_queue3,giant_plague_rat](int $arg) @plague_rat_droptable;
+[ai_queue3,giant_plague_rat] @plague_rat_droptable;
 
 
 [label,plague_rat_droptable]

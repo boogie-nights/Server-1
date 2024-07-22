@@ -6,11 +6,11 @@ if (%burning_desire_progress < 2) {
 } else if (%burning_desire_progress = 2) {
     @burning_desire_use_logs_with_fire;
 } else if (%burning_desire_progress > 2) {
-    ~chatplayer(quiz, "Perhaps I shouldn't mess with Bon Frere's fire anymore.");
+    ~chatplayer("<p,quiz>Perhaps I shouldn't mess with Bon Frere's fire anymore.");
 }
 
 [label,bon_frere_get_away_from_that]
-~chatnpc(angry, "Please do not touch the holy Flame!|I'm doing important work here!");
+~chatnpc("<p,angry>Please do not touch the holy Flame!|I'm doing important work here!");
 
 [label,burning_desire_use_logs_with_fire]
 def_obj $best_logs = ~best_logs;
@@ -46,7 +46,7 @@ if (%burning_desire_plague_rats_count > 1 & %burning_desire_progress = ^burning_
 }
 
 if (%burning_desire_progress = ^burning_desire_complete) {
-    ~chatplayer("default", "I should make my own fire instead.");
+    ~chatplayer("<p,default>I should make my own fire instead.");
     return;
 }
 
@@ -57,7 +57,7 @@ if (%burning_desire_progress < ^burning_desire_burn_rats ) {
 }
 
 if (%burning_desire_progress >= ^burning_desire_burnt_rats) {
-    ~chatplayer(quiz, "I should probably speak with Bon Frere.");
+    ~chatplayer("<p,quiz>I should probably speak with Bon Frere.");
     return;
 }
 

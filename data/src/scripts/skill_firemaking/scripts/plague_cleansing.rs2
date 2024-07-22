@@ -4,6 +4,13 @@ if (%burning_desire_progress < ^burning_desire_complete) {
     return;
 }
 
+def_int $corpse_level = oc_param($plague_corpse, firemaking_req);
+
+if ($corpse_level > stat(firemaking)) {
+    ~mesbox("You need a firemaking level of <tostring($corpse_level)> to burn these remains.");;
+    return;
+}
+
 if(inv_total(inv, $plague_corpse) = null) {
     mes("You're out of <lowercase(oc_name($plague_corpse))>'.");
     return;
@@ -20,6 +27,8 @@ if (%action_delay <= map_clock) {
     mes("You toss the <lowercase(oc_name($plague_corpse))> into the fire.");
     givexp(firemaking, oc_param($plague_corpse, firemaking_exp));
     givexp(prayer, oc_param($plague_corpse, prayer_exp));
+
+    // TODO: Add a check around when to do this.
     %burning_desire_plague_rats_count = calc(%burning_desire_plague_rats_count + 1);
 
     %action_delay = calc(map_clock + 4);

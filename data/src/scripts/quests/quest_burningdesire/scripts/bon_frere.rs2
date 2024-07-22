@@ -108,7 +108,7 @@ if (%burning_desire_plague_rats_count >= 2 & %burning_desire_progress = ^burning
 queue(burning_desire_complete, 0);
 
 [label,bon_frere_post_quest]
-~chatnpc("<p,happy>Hello again, traveller!| I hope you're making good use of the |skills you learned.");
+~chatnpc("<p,happy>Hello again, traveler!| I hope you're making good use of the |skills you learned.");
 ~chatplayer("<p,angry>So, you still don't have a reward for me.");
 ~chatnpc("<p,laugh>I must be on my way!|There are many beasts to cleanse!");
 
