@@ -28,8 +28,5 @@ if (%action_delay <= map_clock) {
     givexp(firemaking, oc_param($plague_corpse, firemaking_exp));
     givexp(prayer, oc_param($plague_corpse, prayer_exp));
 
-    // TODO: Add a check around when to do this.
-    %burning_desire_plague_rats_count = calc(%burning_desire_plague_rats_count + 1);
-
     %action_delay = calc(map_clock + 4);
 }
