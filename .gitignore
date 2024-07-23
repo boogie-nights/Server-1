@@ -55,3 +55,4 @@ Thumbs.db
 ### macOS ###
 .DS_Store
 ._*
+.vscode/settings.json
