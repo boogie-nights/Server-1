@@ -93,7 +93,6 @@ if(%murder_progress ! ^murder_started) {
 }
 if(%murder_poisonproof_progress >= ^poisonproof_spoken_murderer) {
     if(%murder_murderer_id = ^murderer_frank) {
-        // https://youtu.be/P1IDGCA2f9o?si=6aKZAUVbGoVmUF8t&t=327
         %murder_poisonproof_progress = ^poisonproof_searched_loc;
         ~mesbox("It looks like the Sinclair family crest|but it is very dirty.|You can barely make it out under all of the grime.|It's certainly clear nobody's cleaned it recently.");
     } else {
@@ -157,7 +156,7 @@ if(%murder_progress ! ^murder_started) {
     return;
 }
 if(~obj_gettotal(murder_needle) > 0) {
-    mes("I already have Frank's pot.");
+    mes("I already have Elizabeth's needle.");
     return;
 }
 ~mesbox("There's something shiny hidden at the bottom.|You take Frank's silver pot.");
@@ -169,7 +168,7 @@ if(%murder_progress ! ^murder_started) {
     return;
 }
 if(~obj_gettotal(murder_pot) > 0) {
-    mes("I already have Elizabeth's needle.");
+    mes("I already have Frank's pot.");
     return;
 }
 ~mesbox("There's something shiny hidden at the bottom.|You take Elizabeth's silver needle.");
@@ -533,6 +532,6 @@ if(inv_total(bank, unknown_print) > 0) {
 %murder_poisonproof_progress = 0;
 %murder_evidence = 0;
 %murder_murderer_id = 0;
-givexp(crafting, 14060);
+stat_advance(crafting, 14060);
 inv_add(inv, coins, 2000);
 ~send_quest_complete(questlist:murder, coins, 250, ^murder_questpoints, "You have completed the\\nMurder Mystery Quest!");

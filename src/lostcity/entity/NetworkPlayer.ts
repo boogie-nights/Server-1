@@ -50,15 +50,15 @@ export class NetworkPlayer extends Player {
     }
 
     decodeIn() {
-        if (this.client === null || this.client.inOffset < 1) {
+        this.userPath = [];
+        this.opcalled = false;
+
+        if (this.client === null) {
             return;
         }
 
         let offset = 0;
         this.lastResponse = World.currentTick;
-
-        this.userPath = [];
-        this.opcalled = false;
 
         World.cycleStats[WorldStat.BANDWIDTH_IN] += this.client.inOffset;
 
@@ -137,6 +137,7 @@ export class NetworkPlayer extends Player {
         }
         const encoder: MessageEncoder<OutgoingMessage> | undefined = ServerProtRepository.getEncoder(message);
         if (!encoder) {
+            console.error('No encoder for message', message);
             return;
         }
         const prot: ServerProt = encoder.prot;
@@ -176,6 +177,11 @@ export class NetworkPlayer extends Player {
     }
 
     override playerLog(message: string, ...args: string[]): void {
+        // would cause excessive save dialogs on webworker
+        if (typeof self !== 'undefined') {
+            return;
+        }
+
         if (args.length > 0) {
             fs.appendFileSync(`data/players/${this.username}.log`, `[${new Date().toISOString().split('T')[0]} ${this.client?.remoteAddress}]: ${message} ${args.join(' ')}\n`);
         } else {
@@ -193,7 +199,7 @@ export class NetworkPlayer extends Player {
         const reloadBottomZ = (Position.zone(this.originZ) - 4) << 3;
 
         // if the build area should be regenerated, do so now
-        if (this.x < reloadLeftX || this.z < reloadBottomZ || this.x > reloadRightX - 1 || this.z > reloadTopZ - 1 || (this.tele && (Position.zone(this.x) !== Position.zone(this.originX) || Position.zone(this.z) !== Position.zone(this.originZ)))) {
+        if (this.x < reloadLeftX || this.z < reloadBottomZ || this.x > reloadRightX - 1 || this.z > reloadTopZ - 1) {
             this.write(new RebuildNormal(Position.zone(this.x), Position.zone(this.z)));
 
             this.originX = this.x;
@@ -240,11 +246,11 @@ export class NetworkPlayer extends Player {
     }
 
     updatePlayers() {
-        this.write(new PlayerInfo(this.buildArea, this.level, this.x, this.z, this.originX, this.originZ, this.uid, this.mask, this.tele, this.jump, this.walkDir, this.runDir));
+        this.write(new PlayerInfo(this.buildArea, this.level, this.x, this.z, this.originX, this.originZ, this.uid, this.mask, this.tele, this.jump, this.walkDir, this.runDir, Math.abs(this.lastX - this.x), Math.abs(this.lastZ - this.z), this.lastLevel !== this.level));
     }
 
     updateNpcs() {
-        this.write(new NpcInfo(this.buildArea, this.level, this.x, this.z, this.originX, this.originZ));
+        this.write(new NpcInfo(this.buildArea, this.level, this.x, this.z, this.originX, this.originZ, Math.abs(this.lastX - this.x), Math.abs(this.lastZ - this.z), this.lastLevel !== this.level));
     }
 
     updateZones() {
