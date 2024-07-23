@@ -7,7 +7,7 @@ if (%burning_desire_progress < ^burning_desire_complete) {
 def_int $corpse_level = oc_param($plague_corpse, firemaking_req);
 
 if ($corpse_level > stat(firemaking)) {
-    ~mesbox("You need a firemaking level of <tostring($corpse_level)> to burn these remains.");;
+    ~mesbox("You need a firemaking level of <tostring($corpse_level)> to burn these remains.");
     return;
 }
 
