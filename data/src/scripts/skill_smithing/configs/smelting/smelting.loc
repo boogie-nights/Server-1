@@ -8,6 +8,22 @@ sharelight=yes
 forceapproach=east
 category=smithing_furnace
 
+[furnace_smithing_guild]
+name=Furnace
+desc=A hot place for forging things in.
+model=model_loc_165
+width=3
+length=3
+sharelight=yes
+forceapproach=east
+category=smithing_guild_furnace
+
+[coal_barrel_smithing_guild]
+name=Barrel
+desc=A wooden barrel for coal storage.
+op1=Remove-coal
+model=model_loc_362
+
 [furnace_side]
 name=Furnace
 desc=A hot place for forging things in.

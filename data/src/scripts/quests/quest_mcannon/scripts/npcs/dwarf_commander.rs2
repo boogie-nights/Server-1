@@ -212,3 +212,24 @@ queue(mcannon_complete, 0);
 ~chatnpc("<p,neutral>Well, hello there, how you doing?"); // not a typo
 ~chatplayer("<p,neutral>Not bad, yourself?");
 ~chatnpc("<p,happy>I'm great now, those goblins can't get close with this cannon blasting at them!"); // This also reads poorly... but it's correct.
+@multi2(
+    "What's with the ladder by the coal trucks?", dwarf_commander_smithing_guild,
+    "Good bye.", dwarf_commander_good_bye
+);
+
+[label,dwarf_commander_smithing_guild]
+~chatplayer("<p,confused>What's with the ladder by the coal trucks?");
+~chatnpc("<p,happy>Oh that? We needed a place to craft supplies for battle against the invading goblins. So we brought in some of the finest blacksmiths from Keldagrim to help craft us weaponry, and cannon balls.");
+~chatplayer("<p,happy>That sounds interesting! Would I be able to go in?");
+if (stat(smithing) < 60) {
+    ~chatnpc("<p,sad>I'm afraid not. We're looking for some more experienced smiths.");
+    ~chatplayer("<p,sad>Oh... ok.");
+} else {
+    ~chatnpc("<p,laugh>Of course! Your blacksmithing skills might make some of us dwarves blush.");
+    %smithing_guild_entry_allowed = 1;
+}
+
+[label,dwarf_commander_good_bye]
+~chatplayer("<p,happy>Good bye."); 
+~chatnpc("<p,happy>Be seeing you, human.");
+

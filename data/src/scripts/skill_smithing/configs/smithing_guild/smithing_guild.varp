@@ -1,0 +1,5 @@
+[smithing_guild_entry_allowed]
+scope=perm
+
+[coal_barrel]
+scope=perm

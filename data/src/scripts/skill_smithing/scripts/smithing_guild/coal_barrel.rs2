@@ -1,0 +1,40 @@
+[oploc1,coal_barrel_smithing_guild]
+def_int $coal_to_remove = %coal_barrel;
+def_string $coal_mes = "You remove the coal from the barrel.";
+if($coal_to_remove = 0) {
+    mes("There is no coal left in the barrel.");
+    return;
+}
+if(inv_freespace(inv) = 0) {
+    mes("You do not have enough inventory space!");
+    return;
+}
+if($coal_to_remove > inv_freespace(inv)) {
+    $coal_to_remove = inv_freespace(inv);
+    $coal_mes = "You remove some of the coal from the barrel.";
+}
+// assuming sound_230 is our mine_ore equivalent (this uses mine_ore in osrs)
+sound_synth(sound_230, 0, 0);
+%coal_barrel = calc(%coal_barrel - $coal_to_remove);
+inv_add(inv, coal, $coal_to_remove);
+mes($coal_mes);
+
+[oplocu,coal_barrel_smithing_guild]
+if(last_useitem ! coal) {
+    mes("The coal barrel isn't meant to hold that.");
+    return;
+}
+if(%coal_barrel >= ^smithing_guild_coal_barrel_cap) {
+    mes("The coal barrel is full.");
+    return;
+}
+def_int $dep_amount = inv_total(inv, coal);
+def_string $coal_mes = "You put the coal in the barrel.";
+if(calc($dep_amount + %coal_barrel) > ^smithing_guild_coal_barrel_cap) {
+    $dep_amount = calc(^smithing_guild_coal_barrel_cap - %coal_barrel);
+    $coal_mes = "You put some of the coal in the barrel.";
+}
+sound_synth(sound_230, 0, 0);
+%coal_barrel = calc(%coal_barrel + $dep_amount);
+inv_del(inv, coal, $dep_amount);
+mes($coal_mes);

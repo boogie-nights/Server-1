@@ -83,6 +83,9 @@ p_arrivedelay;
 if(loc_coord = 0_50_149_22_52) { // Zanaris ladder (entrance room)
     @climb_ladder(0_50_49_1_33, true);
 }
+if (loc_coord = 0_40_155_26_15) {
+    @climb_ladder(0_40_54_12_31, true);
+}
 @climb_ladder(movecoord(coord(), 0, 0, -6400), true);
 
 [oploc1,loc_1757] 
@@ -91,7 +94,15 @@ p_arrivedelay;
 
 [oploc1,loc_1759]
 p_arrivedelay;
-@climb_ladder(movecoord(coord(), 0, 0, 6400), false);
+
+if (loc_coord = 0_40_54_11_31) {
+    if (~has_smithing_guild_requirements = true) {
+        @climb_ladder(0_40_155_27_15, false);
+    }
+    ~mesbox("You must have 60 Smithing and to have completed|the Dwarf Cannon quest to enter the Blacksmith's Guild.");
+} else {
+    @climb_ladder(movecoord(coord(), 0, 0, 6400), false);
+}
 
 [oploc1,loc_1765]
 def_coord $coord = loc_coord();

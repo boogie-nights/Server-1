@@ -1,0 +1,149 @@
+[opnpc1,dwarf_smithing_guild_consortium_member]
+~chatplayer("<p,happy>Hello there!");
+~chatnpc("<p,neutral>Hello there, human.|How can I help you?");
+@multi2(
+    "What do you do here?", sg_consortium_member_what_do_you_do_here,
+    "I must be going.", sg_consortium_member_i_must_be_going
+);
+
+[label,sg_consortium_member_what_do_you_do_here]
+~chatplayer("<p,quiz>What do you do here?");
+~chatnpc("<p,happy>I will exchange any pieces of steel and greater equipment for coal certificates redeemable by any Bank of Varrock location.");
+~chatplayer("<p,quiz>Oh! Well how much coal will I get in return?");
+~chatnpc("<p,happy>Well that depends entirely on how our blacksmiths grade the equipment. Despite its outward appearance, not every item you create is actually of the same quality.");
+~chatplayer("<p,angry>Hey now... Every time I work on an item I use all of my skill to do so.");
+~chatnpc("<p,annoyed>Ahem, quite. I'm sure each item will hold up just fine. Anyhow, our skilled artisans will be the judge of the payment.");
+~chatnpc("<p,bored>Sometimes we get an item that is not worth the coal it was made from, and others are such extravagant pieces that we will reward above what it took to create. Most, of course, fall somewhere in between.");
+~chatplayer("<p,quiz>I see...");
+~chatnpc("<p,happy>Well, if you would ever like to use my services just show me a piece of equipment and we'll send it off for appraisal.");
+~chatplayer("<p,happy>Alright then, I'll be going now.");
+~chatnpc("<p,bored>Certainly.");
+
+[label,sg_consortium_member_i_must_be_going]
+~chatplayer("<p,happy>I must be going.");
+~chatnpc("<p,bored>Well off you go then.");
+
+[opnpcu,dwarf_smithing_guild_consortium_member]
+switch_obj(last_useitem) {
+    case steel_platebody : @sg_exchange_equipment_for_coal_cert(last_useitem);
+}
+
+[label,sg_exchange_equipment_for_coal_cert](obj $item_used)
+// get item data from db
+db_find(smithing:ifproduct, $item_used);
+def_dbrow $data = db_findnext;
+if ($data = null) {
+    ~displaymessage(^dm_default);
+    return;
+}
+
+def_int $item_used_bar_count = db_getfield($data,smithing:bar_amount, 0);
+def_obj $item_used_bar_type = db_getfield($data,smithing:bar, 0);
+def_int $coal_per_bar = 0;
+
+switch_obj($item_used_bar_type) {
+    case steel_bar : $coal_per_bar = 2;
+    case mithril_bar : $coal_per_bar = 4;
+    case adamantite_bar : $coal_per_bar = 6;
+    case runite_bar : $coal_per_bar = 8;
+}
+
+def_int $coal_certs_awarded = 0;
+def_int $max_coal_reward = calc($coal_per_bar * $item_used_bar_count);
+
+if ($item_used_bar_count = 5) {
+    $coal_certs_awarded = ~roll_for_five_bars($item_used_bar_count, $max_coal_reward, $coal_per_bar);
+} else if ($item_used_bar_count = 4) {
+    $coal_certs_awarded = ~roll_for_four_bars($item_used_bar_count, $max_coal_reward, $coal_per_bar);
+}  else if ($item_used_bar_count = 3) {
+    $coal_certs_awarded = ~roll_for_three_bars($item_used_bar_count, $max_coal_reward, $coal_per_bar);
+}  else if ($item_used_bar_count = 2) {
+    $coal_certs_awarded = ~roll_for_two_bars($item_used_bar_count, $max_coal_reward, $coal_per_bar);
+}  else if ($item_used_bar_count = 1) {
+    $coal_certs_awarded = ~roll_for_one_bar($item_used_bar_count, $max_coal_reward, $coal_per_bar);
+} 
+
+inv_del(inv, $item_used, 1);
+if ($coal_certs_awarded > 0) {
+    inv_add(inv, cert_coal, $coal_certs_awarded);
+}
+
+~mesbox("The Dwarf exchanges your <oc_name(last_useitem)> for <tostring($coal_certs_awarded)> coal certificates.");
+
+
+[proc,roll_for_five_bars](int $item_used_bar_count, int $max_coal_reward, int $coal_per_bar)(int)
+def_int $roll_for_coal = randominc(100);
+
+if ($roll_for_coal < 2) {
+   return(calc($max_coal_reward * 2));
+} else if ($roll_for_coal < 10) {
+    return($max_coal_reward);
+} else if ($roll_for_coal < 25) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 1)));
+} else if ($roll_for_coal < 65) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 2)));
+} else if ($roll_for_coal < 80) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 3)));
+} else if ($roll_for_coal < 98) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 4)));
+} else if ($roll_for_coal < 100) {
+    return(0);
+}
+
+[proc,roll_for_four_bars](int $item_used_bar_count, int $max_coal_reward, int $coal_per_bar)(int)
+def_int $roll_for_coal = randominc(100);
+
+if ($roll_for_coal < 2) {
+   return(calc($max_coal_reward * 2));
+} else if ($roll_for_coal < 10) {
+    return($max_coal_reward);
+} else if ($roll_for_coal < 20) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 1)));
+} else if ($roll_for_coal < 60) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 2)));
+} else if ($roll_for_coal < 98) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 3)));
+} else if ($roll_for_coal < 100) {
+    return(0);
+}
+
+[proc,roll_for_three_bars](int $item_used_bar_count, int $max_coal_reward, int $coal_per_bar)(int)
+def_int $roll_for_coal = randominc(100);
+
+if ($roll_for_coal < 2) {
+   return(calc($max_coal_reward * 2));
+} else if ($roll_for_coal < 15) {
+    return($max_coal_reward);
+} else if ($roll_for_coal < 20) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 1)));
+} else if ($roll_for_coal < 80) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 2)));
+} else if ($roll_for_coal < 98) {
+    return(0);
+}
+
+[proc,roll_for_two_bars](int $item_used_bar_count, int $max_coal_reward, int $coal_per_bar)(int)
+def_int $roll_for_coal = randominc(100);
+
+if ($roll_for_coal < 2) {
+   return(calc($max_coal_reward * 2));
+} else if ($roll_for_coal < 15) {
+    return($max_coal_reward);
+} else if ($roll_for_coal < 40) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 1)));
+} else if ($roll_for_coal < 60) {
+    return(calc($coal_per_bar * ($item_used_bar_count - 2)));
+} else if ($roll_for_coal < 98) {
+    return(0);
+}
+
+[proc,roll_for_one_bar](int $item_used_bar_count, int $max_coal_reward, int $coal_per_bar)(int)
+def_int $roll_for_coal = randominc(100);
+
+if ($roll_for_coal < 2) {
+   return(calc($max_coal_reward * 2));
+} else if ($roll_for_coal < 30) {
+    return($max_coal_reward);
+} else if ($roll_for_coal < 100) {
+    return(0);
+}

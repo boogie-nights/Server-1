@@ -1,0 +1,8 @@
+[proc,has_smithing_guild_requirements]()(boolean)
+if (%mcannon_progress = ^mcannon_complete & %smithing_guild_entry_allowed = 1 & stat(smithing) >= 60) {
+    return(true);
+} else {
+    ~chatplayer("<p,confused>I should speak with someone in charge here before I go climbing down ladders.");
+    return(false);
+}
+

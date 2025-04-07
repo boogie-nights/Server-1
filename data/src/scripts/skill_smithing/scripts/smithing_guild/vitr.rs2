@@ -1,0 +1,104 @@
+[opnpc1,vitr]
+~chatplayer("<p,happy>Hello there! I'm <displayname>.");
+~chatnpc("<p,happy>Nice to meet you, <displayname>. I'm Vitr.");
+@multi3(
+    "What do you do here?", vitr_what_do_you_do_here,
+    "I'd like to exchange some notes.", vitr_id_like_to_exchange_some_notes,
+    "I must be going.", vitr_i_must_be_going
+);
+
+[opnpcu,vitr]
+switch_obj(last_useitem) {
+    case cert_copper_ore : @exchange_ore(cert_copper_ore, copper_ore);
+    case cert_tin_ore : @exchange_ore(cert_tin_ore, tin_ore);
+    case cert_iron_ore : @exchange_ore(cert_iron_ore, iron_ore);
+    case cert_mithril_ore : @exchange_ore(cert_mithril_ore, mithril_ore);
+    case cert_adamantite_ore : @exchange_ore(cert_adamantite_ore, adamantite_ore);
+    case cert_runite_ore : @exchange_ore(cert_runite_ore, runite_ore);
+}
+
+[label,vitr_what_do_you_do_here]
+~chatplayer("<p,quiz>What do you do here?");
+~chatnpc("<p,happy>Currently, I'm here on behalf of the Consortium to exchange bank notes for their respective items.");
+~chatplayer("<p,happy>Oh wow! So I can give you any noted item and you'll swap it out for me?");
+~chatnpc("<p,happy>Ahh yes... Well, not quite. You see I specifically trade in ores, and only those that we can create weapons and armor from. Of course there is the matter of a small transaction fee...");
+~chatplayer("<p,quiz>A small transaction fee?");
+~chatnpc("<p,happy>Quite! For the measly cost of <tostring(^smithing_guild_ore_swap_price)> gold pieces I'll exchange your noted item. Is there anything else?");
+@multi2(
+    "I'd like to exchange some notes.", vitr_id_like_to_exchange_some_notes,
+    "I must be going.", vitr_i_must_be_going
+);
+
+[label,vitr_id_like_to_exchange_some_notes]
+@multi5_header(
+    "Copper", exchange_copper,
+    "Tin", exchange_tin,
+    "Iron", exchange_iron,
+    "Mithril", exchange_mithril,
+    "More", vitr_id_like_to_exchange_page_2,
+    "What notes would you like to exchange?"
+);
+
+[label,vitr_id_like_to_exchange_page_2]
+@multi3_header(
+    "Adamantite", exchange_adamantite,
+    "Runite", exchange_runite,
+    "Back", vitr_id_like_to_exchange_some_notes,
+    "What notes would you like to exchange?"
+);
+
+[label,exchange_ore](obj $ore, namedobj $ore_uncerted)
+p_countdialog;
+if (last_int <= 0) return;
+def_int $requested_ores = last_int;
+
+def_int $total_ore = inv_total(inv, $ore);
+if ($total_ore < 1) {
+    ~mesbox("You don't have any noted ore to swap.");
+    return;
+}
+
+def_int $total_coins = inv_total(inv, coins);
+if ($total_coins < ^smithing_guild_ore_swap_price) {
+     ~mesbox("You don't have enough coins to pay for this transaction.");
+    return;
+}
+
+def_int $inv_space = inv_freespace(inv);
+if ($inv_space < 1) {
+    ~mesbox("You don't have enough inventory space for this transaction.");
+    return;
+}
+
+if ($requested_ores > $inv_space) {
+    $requested_ores = $inv_space;
+}
+
+def_int $required_coins = multiply(^smithing_guild_ore_swap_price, $requested_ores);
+def_int $actual_coins_required = 0;
+if ($required_coins > $total_coins)  {
+
+    if (modulo($total_coins, ^smithing_guild_ore_swap_price) ! 0) {
+        $actual_coins_required = calc($total_coins - 1);
+        $required_coins = divide($total_coins, ^smithing_guild_ore_swap_price);
+    }
+}
+
+def_int $ore_to_exchange = min($requested_ores, $required_coins);
+inv_del(inv, $ore, $ore_to_exchange);
+inv_del(inv, coins, $actual_coins_required);
+inv_add(inv, $ore_uncerted, $ore_to_exchange);
+
+~mesbox("Vtir exchanges your bank notes for <tostring($ore_to_exchange)> <oc_name($ore_uncerted)>.");
+
+[label,exchange_copper] @exchange_ore(cert_copper_ore, copper_ore);
+[label,exchange_tin]
+[label,exchange_iron]
+[label,exchange_mithril]
+[label,exchange_adamantite]
+[label,exchange_runite]
+
+[label,vitr_i_must_be_going]
+~chatplayer("<p,happy>I must be going.");
+~chatnpc("<p,happy>Farewell then.");
+
