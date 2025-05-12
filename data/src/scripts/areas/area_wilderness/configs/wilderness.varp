@@ -1,1 +1,7 @@
 [wilderness]
+
+[ripple_effect]
+type=int
+
+[ripple_effect_coord]
+type=coord

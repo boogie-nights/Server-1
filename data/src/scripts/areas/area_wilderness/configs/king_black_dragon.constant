@@ -1,0 +1,9 @@
+^kbd_bottom_left = 0_42_153_29_25
+^kdb_center = 0_42_153_30_27
+^kbd_top_right = 0_42_153_31_28
+
+^kbd_ice_attack = 1
+^kbd_poison_attack = 2
+^kbd_lightning_attack = 3
+^kbd_fire_line_attack = 4
+^kbd_ground_stomp_attack = 5

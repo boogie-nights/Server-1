@@ -1,0 +1,117 @@
+[debugproc,circh](int $radius)
+~draw_circle_hollow(coord, $radius, 10);
+
+[debugproc,circf](int $radius)
+~draw_circle_filled(coord, $radius);
+
+[debugproc,hline](int $length)
+~draw_horizontal_line(coord, 0, $length);
+
+[debugproc,vline](int $height)
+~draw_vertical_line(coord,0, $height);
+
+[debugproc,ripple]
+if (p_finduid(uid) = true) {
+    %ripple_effect_coord = coord;
+    %ripple_effect = 0;
+}
+~start_ripple;
+
+[debugproc,kbdfl]
+~king_dragon_fire_line;
+
+[proc,start_ripple]
+settimer(ripple, 1);
+
+[proc,stop_ripple]
+cleartimer(ripple);
+
+[timer,ripple]
+if (p_finduid(uid) = true) {
+    if (%ripple_effect > 4) {
+        ~stop_ripple;
+    } else {
+        %ripple_effect = calc(%ripple_effect + 1);
+        ~draw_circle_hollow(%ripple_effect_coord, %ripple_effect, 2);
+    }
+}
+
+[proc,draw_circle_hollow](coord $starting_coord, int $radius, int $duration)()
+def_int $t1 = calc($radius / 16);
+def_int $t2 = 0;
+
+def_int $x = $radius;
+def_int $y = 0;
+
+while ($x >= $y) {
+
+    loc_add(movecoord($starting_coord, $x, 0, $y), macro_ironrock1, 0, centrepiece_straight, $duration);
+    loc_add(movecoord($starting_coord, $x, 0, sub(0, $y)), macro_ironrock1, 0, centrepiece_straight, $duration);
+    loc_add(movecoord($starting_coord, sub(0, $x), 0, $y), macro_ironrock1, 0, centrepiece_straight, $duration);
+    loc_add(movecoord($starting_coord, sub(0, $x), 0, sub(0, $y)), macro_ironrock1, 0, centrepiece_straight, $duration);
+
+    loc_add(movecoord($starting_coord, $y, 0, $x), macro_ironrock1, 0, centrepiece_straight, $duration);
+    loc_add(movecoord($starting_coord, $y, 0, sub(0, $x)), macro_ironrock1, 0, centrepiece_straight, $duration);
+    loc_add(movecoord($starting_coord, sub(0, $y), 0, $x), macro_ironrock1, 0, centrepiece_straight, $duration);
+    loc_add(movecoord($starting_coord, sub(0, $y), 0, sub(0, $x)), macro_ironrock1, 0, centrepiece_straight, $duration);
+    
+    $y = calc($y + 1);
+    $t1 = calc($t1 + $y);
+    $t2 = calc($t1 - $x);
+
+    if ($t2 >= 0) {
+        $t1 = $t2;
+        $x = calc($x - 1);
+    } 
+}
+
+[proc,draw_circle_filled](coord $start, int $radius)()
+def_int $x = $radius;
+def_int $y = 0;
+def_int $radius_error = calc(1 - $x);
+
+ while ($x >= $y) {
+
+    def_coord $startX = movecoord($start, sub(0, $x), 0, 0);
+    def_coord $endX = movecoord($start, add(0, $x), 0, 0);
+
+    def_int $dist = calc(coordx($endX) - coordx($startX) + 1);
+    
+    ~draw_horizontal_line($startX, $y, $dist);
+
+    if ($y ! 0) {
+        ~draw_horizontal_line($startX, sub(0, $y), $dist);
+    }
+    $y = calc($y + 1);
+
+    if ($radius_error < 0) {
+        $radius_error = calc(2 * $y + 1);
+    } else {
+        if ($x >= $y) {
+            $startX = movecoord($start, calc(sub(0, $y) + 1), 0, 0);
+            $endX = movecoord($start, calc($y - 1), 0, 0);
+            $dist = calc(coordx($endX) - coordx($startX) + 1);
+
+            ~draw_horizontal_line($startX, $x, $dist);
+            ~draw_horizontal_line($startX, sub(0, $x), $dist);
+        }
+        $x = calc($x - 1);
+        $radius_error = calc(2 * ($y - $x + 1));
+    }
+ }
+
+[proc,draw_horizontal_line](coord $start, int $zOffset, int $length)()
+def_int $x = 0;
+
+while($x < $length) {
+    loc_add(movecoord($start, $x, 0, $zOffset), macro_ironrock1, 0, centrepiece_straight, 10);
+    $x = calc($x + 1);
+}
+
+[proc,draw_vertical_line](coord $start, int $xOffset, int $height)()
+def_int $z = 0;
+
+while($z < $height) {
+    loc_add(movecoord($start, $xOffset, 0, $z), macro_ironrock1, 0, centrepiece_straight, 10);
+    $z = calc($z + 1);
+}

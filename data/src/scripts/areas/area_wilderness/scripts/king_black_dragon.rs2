@@ -72,6 +72,94 @@ if ($random < 10) { // osrs
 }
 
 
+// New ideas:
+// Melee - basically the same + KBD is now stationary, if you step under him to be a dweeb ass you're met with with a knockback mechanic.
+// New Melee - A stomp that makes an earthquake like effect (essentially irrelevant if ranging)
+// Dragon Fire basic can stay the same
+// New Dragon Fire attack where he charges his laser and shoots a cone of fire out
+//      loc = Fire_Graphic? run that on the ground behind the fire
+//      spotanim = firebreath_travel
+//      Maybe do a smoke cloud when clearing the fire_Graphic?
+//      spot anim = smokecloud
+// Ice Attack - Can stay the same
+// Lightning Attack - Stay the same but chain between players standing too close?
+// Poison Attack - Like leagues drop poison puddles on the ground that you have to not stand in the way of
+
+// Additionally bake in a check so he won't just spam the same attack over and over and over and over and over and over and over
+
+[proc,king_dragon_stomp_attack]
+npc_say("I'm stompin' heeeere!");
+npc_anim(dragon_attack, 0);
+~king_dragon_start_stomp;
+
+%npc_action_delay = add(map_clock, 5);
+queue(playerhit_n_retaliate, 0, npc_uid); // this should be a queue* command
+~npc_set_attack_vars;
+
+
+[timer,king_dragon_stomp_effect]
+if (npc_find(^kdb_center, king_dragon, 5, 0) = true) {
+
+    if (%kbd_earth_quake_size < 2) {
+        %kbd_earth_quake_size = 2;
+    }
+
+    if (%kbd_earth_quake_size >= 6) {
+        ~king_dragon_stop_stomp;
+    } else {
+        %kbd_earth_quake_size = calc(%kbd_earth_quake_size + 1);
+        ~draw_circle_hollow(^kdb_center, %kbd_earth_quake_size, 2);
+    }
+}
+
+
+[proc,king_dragon_start_stomp]
+settimer(king_dragon_stomp_effect, 1);
+
+[proc,king_dragon_stop_stomp]
+cleartimer(king_dragon_stomp_effect);
+
+
+[proc,king_dragon_fire_line]
+~coord_projectile(^kdb_center, 0_42_153_31_13, firebreath_travel, 35, 35, 48, -2, -2, 64, 10); // telegrab
+
+
+[timer,king_dragon_knockback]
+if (inzone(^kbd_bottom_left, ^kbd_top_right, coord) = true & npc_find(^kdb_center, king_dragon, 5, 0) = true) {
+    @kbd_shove_player;
+}
+
+[label,kbd_shove_player]
+if (npc_find(^kdb_center, king_dragon, 5, 0) = true) {
+    npc_say("Grr!");
+    npc_anim(dragon_attack, 0);
+}
+
+mes("The King Black Dragon brushes you aside!");
+
+def_int $move_dir_x = 0;
+def_int $move_dir_z = 0;
+
+if (coordx(coord) <= coordx(^kdb_center)) {
+    $move_dir_x = -4;
+} else if (coordx(coord) >= coordx(^kdb_center)) {
+    $move_dir_x = 4;
+}
+
+if (coordz(coord) <= coordz(^kdb_center)) {
+    $move_dir_z = -4;
+} else if (coordz(coord) >= coordz(^kdb_center)) {
+    $move_dir_z = 4;
+}
+say("Oof!");
+~agility_force_move(0, human_blown_middle, movecoord(coord, $move_dir_x, 0, $move_dir_z));
+say("Ahh!");
+~damage_self(5);
+~set_walkbas(human_blown_end_getup);
+p_delay(1);
+~update_bas;
+
+
 [ai_applayer2,king_dragon]
 if (%npc_action_delay > map_clock) {
     return;
@@ -86,9 +174,9 @@ if (~npc_check_notcombat_self = false) {
 // kbd can attack from a distance but can also be safespoted
 // - https://imgur.com/9ervTTQ
 // - https://imgur.com/otGvibL
-if (npc_range(coord) > 1) {
-    ~kbd_dragonfire_far;
-}
+// if (npc_range(coord) > 1) {
+//     ~kbd_dragonfire_far;
+// }
 npc_sethuntmode(aggressive_melee);
 npc_setmode(opplayer2);
 
@@ -114,11 +202,15 @@ npc_sethuntmode(king_dragon);
 def_int $random_attack = random(3);
 if ($random_attack = 0) {
     ~kbd_dragonfire_close;
+    //& %kbd_last_special_attack ! ^kbd_ground_stomp_attack
 } else if ($random_attack = 1) {
-    ~kbd_special_breath;
+    // ~kbd_special_breath;
+    %kbd_last_special_attack = ^kbd_ground_stomp_attack;
+    ~king_dragon_stomp_attack;
 } else {
-    ~dragon_melee;
+     ~dragon_melee;
 }
+
 // ------------
 // far range fire breath
 [proc,kbd_dragonfire_far]
@@ -188,7 +280,6 @@ if (randominc($attack_roll) > randominc($defence_roll)) {
     if (%prayer_protectfrommagic = ^false & inv_total(worn, antidragonbreathshield) < 1) {
         mes("You're horribly burnt by the dragon's fiery breath!"); // https://youtu.be/R3ozXHcQkgs?list=PLn23LiLYLb1bYAFU3Vdk3N9niuHs-b-4-&t=78
     }
-
 }
 queue(combat_damage_player, 0, $damage);
 queue(playerhit_n_retaliate, 0, npc_uid); // this should be a queue* command

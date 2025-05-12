@@ -184,7 +184,9 @@ settimer(move_ikovtrigger, 1);
 
 [mapzone,0_42_152] @music_playbyregion(coord);
 
-[mapzone,0_42_153] @music_playbyregion(coord);
+[mapzone,0_42_153] 
+settimer(king_dragon_knockback, 1);
+@music_playbyregion(coord);
 
 [mapzone,0_43_45] @music_playbyregion(coord);
 

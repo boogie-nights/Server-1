@@ -1,0 +1,8 @@
+[kbd_last_special_attack]
+type=int
+
+[kbd_earthquake_coord]
+type=coord
+
+[kbd_earth_quake_size]
+type=int

@@ -20,12 +20,14 @@ recol5s=32767
 recol5d=18884
 model1=model_2853_npc
 model2=model_2855_npc
-wanderrange=20
-maxrange=20
+wanderrange=0
+maxrange=0
+moverestrict=nomove
 // https://youtu.be/KhI0x-fSKac?list=PLn23LiLYLb1bYAFU3Vdk3N9niuHs-b-4-&t=147
 // best video i could find
 huntrange=20
-attackrange=15
+attackrange=20
+// blockwalk=all
 // based on this video. Should be double the respawn of this https://youtu.be/P8BxiqEV7ws
 respawnrate=150
 hitpoints=240
